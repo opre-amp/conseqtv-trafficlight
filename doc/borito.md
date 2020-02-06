@@ -1,8 +1,24 @@
+**Házi feladat**
+
 Csapatnév:
 
-Csapattagok (név, Neptun-kód, e-mail cím):
-- ?
-- ?
-- ?
+Csapattagok Neptun kóddal:
+- Minta Mókus (ABC123)
+- Minta Mókus (ABC123)
+- Minta Mókus (ABC123)
 
-Bemutató videó URL-je (max. 5 perc): ...
+Bemutató videó URL: 
+
+**Pontot érő technológiák**
+(Amit elkészítettetek, azt X-eljétek be!)
+
+- [ ] ?p: ?
+
+A hivatalos teljes lista itt található: ???
+
+**A videó újrahasznosíthatósága**
+
+A házi feladat videót oktatási célokra újrahasznosíthatjuk? (Későbbi évfolyamoknak bemutatás, vágott anyagban felhasználás.)
+- [ ] Igen, a szerzők megjelölésével
+- [ ] Igen, névtelenül
+- [ ] Nem
