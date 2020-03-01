@@ -1,11 +1,11 @@
 **Házi feladat**
 
-Csapatnév:
+Csapatnév: ConseQtv
 
 Csapattagok Neptun kóddal:
-- Minta Mókus (ABC123)
-- Minta Mókus (ABC123)
-- Minta Mókus (ABC123)
+- Szászfai Vilmos (BWHNP9)
+- Bajczi Levente (XAO5ER)
+- Meleg Eszter (FK5E4E)
 
 Bemutató videó URL: 
 (Ugye minden olyan dolog szerepel benne a kiírásnak megfelelően, amire pontot szeretnétek kapni?)
