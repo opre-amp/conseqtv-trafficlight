@@ -19,18 +19,10 @@ void waits(unsigned int secs)
 }
 
 
-typedef struct
-{
-    char valid;
-    unsigned int start;
-    unsigned int after;
-    void (*fp)(void);    
-} job;
-
 #define QUEUE_SIZE 10
 static job queue[QUEUE_SIZE] = {0};
 
-void schedule(unsigned int msecs, void (*fp)(void))
+job* schedule(unsigned int msecs, void (*fp)(void))
 {
     for(int i = 0; i < QUEUE_SIZE; ++i)
     {
@@ -39,10 +31,10 @@ void schedule(unsigned int msecs, void (*fp)(void))
             queue[i].start = *core_timer_ls32;
             queue[i].after = *core_timer_ls32 + msecs*TIMER_PER_MS;
             queue[i].fp = fp;
-            break;
+            return &queue[i];
         }
     }
-
+    return 0;
 }
 
 void run_jobs()

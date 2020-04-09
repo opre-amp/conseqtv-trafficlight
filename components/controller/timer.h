@@ -5,6 +5,14 @@
 extern "C"{
 #endif
 
+typedef struct
+{
+    char valid;
+    unsigned int start;
+    unsigned int after;
+    void (*fp)(void);    
+} job;
+
 /*
  * Performs busy-waiting for a given amount of time.
  * @param msecs     The number of milliseconds to wait for.
@@ -19,8 +27,9 @@ void waits(unsigned int secs);
 
 /*
  * Schedules a function to be executed after a given time
+ * @return      Scheduled job
  */
-void schedule(unsigned int msecs, void (*fp)(void));
+job* schedule(unsigned int msecs, void (*fp)(void));
 
 /*
  * Runs the (over)due jobs in the execution queue.
