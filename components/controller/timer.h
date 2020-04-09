@@ -17,6 +17,15 @@ void waitms(unsigned int msecs);
  */
 void waits(unsigned int secs);
 
+/*
+ * Schedules a function to be executed after a given time
+ */
+void schedule(unsigned int msecs, void (*fp)(void));
+
+/*
+ * Runs the (over)due jobs in the execution queue.
+ */
+void run_jobs();
 
 #ifdef __cplusplus
 }
