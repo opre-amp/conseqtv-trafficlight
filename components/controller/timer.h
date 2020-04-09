@@ -27,6 +27,11 @@ void schedule(unsigned int msecs, void (*fp)(void));
  */
 void run_jobs();
 
+/*
+ * Deletes all jobs
+ */
+void empty_scheduling_queue();
+
 #ifdef __cplusplus
 }
 #endif

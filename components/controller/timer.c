@@ -1,5 +1,5 @@
 #include "timer.h"
-
+#include "mailbox_api.h"
 #define TIMER_PER_MS 19200
 
 static volatile unsigned int* core_timer_ls32 = (void*)0x4000001C;
@@ -48,14 +48,24 @@ void schedule(unsigned int msecs, void (*fp)(void))
 void run_jobs()
 {
     unsigned int time = *core_timer_ls32;
+
     for(int i = 0; i < QUEUE_SIZE; ++i)
     {
         if(queue[i].valid) {
             if((time >= queue[i].after && queue[i].start <= queue[i].after) ||
                (time >= queue[i].after && queue[i].start > queue[i].after && time < queue[i].start)) {
-                   queue[i].fp();
-                   queue[i].valid = 0;
+                    queue[i].valid = 0;
+                    queue[i].fp();
                }
         }
     }
+}
+
+void empty_scheduling_queue()
+{
+    for(int i = 0; i < QUEUE_SIZE; ++i)
+    {
+        queue[i].valid = 0;
+    }
+
 }
