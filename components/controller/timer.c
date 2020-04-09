@@ -22,7 +22,7 @@ void waits(unsigned int secs)
 #define QUEUE_SIZE 10
 static job queue[QUEUE_SIZE] = {0};
 
-job* schedule(unsigned int msecs, void (*fp)(void))
+job* schedule_or(unsigned int msecs, void (*fp)(void), char* alternative, void (*fpalt)(void))
 {
     for(int i = 0; i < QUEUE_SIZE; ++i)
     {
@@ -30,11 +30,18 @@ job* schedule(unsigned int msecs, void (*fp)(void))
             queue[i].valid = 1;
             queue[i].start = *core_timer_ls32;
             queue[i].after = *core_timer_ls32 + msecs*TIMER_PER_MS;
+            queue[i].alternative = alternative;
             queue[i].fp = fp;
+            queue[i].fpalt = fpalt;
             return &queue[i];
         }
     }
     return 0;
+}
+
+job* schedule(unsigned int msecs, void (*fp)(void))
+{
+    return schedule_or(msecs, fp, 0, 0);
 }
 
 void run_jobs()
@@ -49,6 +56,10 @@ void run_jobs()
                     queue[i].valid = 0;
                     queue[i].fp();
                }
+            else if(queue[i].alternative && *(queue[i].alternative)) {
+                    queue[i].valid = 0;
+                    queue[i].fpalt();
+            }
         }
     }
 }

@@ -88,3 +88,14 @@ void pgreen(char state)
     if(state == 1)  while(!send_data(pgreen_on, sizeof(pgreen_on), 0));
     if(!state) while(!send_data(pgreen_off, sizeof(pgreen_off), 0));
 }
+
+
+int pedestrian_signal()
+{
+    return 0;
+}
+
+int stopped_car()
+{
+    return 0;
+}

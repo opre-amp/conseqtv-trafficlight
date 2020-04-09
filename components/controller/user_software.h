@@ -12,15 +12,17 @@ extern "C"{
  */
 typedef enum
 {
-    OFF         = 1,
-    BL_YELLOW   = 2,
-    YELLOW      = 3,
-    RED_PR_1    = 4,
-    RED_PG      = 5,
-    RED_BL      = 6,
-    RED_PR_2    = 7,
-    RED_YELLOW  = 8,
-    GREEN       = 9
+    OFF          = 1,
+    BL_YELLOW    = 2,
+    YELLOW       = 3,
+    RED_PR_1     = 4,
+    RED_PG       = 5,
+    RED_PG_STOP  = 6,
+    RED_BL       = 7,
+    RED_PR_2     = 8,
+    RED_YELLOW   = 9,
+    GREEN        = 10,
+    GREEN_SIGNAL = 11
 } state;
 
 /*
@@ -32,7 +34,8 @@ typedef enum
     SWITCH_ON = 1,
     SWITCH_OFF = 2,
     POLICE = 3,
-    TIME
+    TIME = 4,
+    STOPPED = 5
 } signal;
 
 /*

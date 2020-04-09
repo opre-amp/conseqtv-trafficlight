@@ -18,7 +18,15 @@ void green(char state);
 void pred(char state);
 void pgreen(char state);
 
+/*
+ * Returns 1 if the pedestrian signal is pressed, 0 otherwise
+ */
+int pedestrian_signal();
 
+/*
+ * Returns 1 if there is a car waiting, 0 otherwise
+ */
+int stopped_car();
 
 #ifdef __cplusplus
 }

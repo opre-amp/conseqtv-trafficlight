@@ -10,7 +10,9 @@ typedef struct
     char valid;
     unsigned int start;
     unsigned int after;
+    char* alternative;
     void (*fp)(void);    
+    void (*fpalt)(void);    
 } job;
 
 /*
@@ -30,6 +32,12 @@ void waits(unsigned int secs);
  * @return      Scheduled job
  */
 job* schedule(unsigned int msecs, void (*fp)(void));
+
+/*
+ * Schedules a function to be executed after a given time or when a value is no longer 0
+ * @return      Scheduled job
+ */
+job* schedule_or(unsigned int msecs, void (*fp)(void), char* alternative, void(*fpalt)(void));
 
 /*
  * Runs the (over)due jobs in the execution queue.
