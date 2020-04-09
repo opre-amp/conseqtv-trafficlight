@@ -2,7 +2,6 @@
 #define USER_SOFTWARE_H
 
 #include "timer.h"
-#include "mailbox_api.h"
 
 #ifdef __cplusplus
 extern "C"{
@@ -18,9 +17,10 @@ typedef enum
     YELLOW      = 3,
     RED_PR_1    = 4,
     RED_PG      = 5,
-    RED_PR_2    = 6,
-    RED_YELLOW  = 7,
-    GREEN       = 8
+    RED_BL      = 6,
+    RED_PR_2    = 7,
+    RED_YELLOW  = 8,
+    GREEN       = 9
 } state;
 
 /*
