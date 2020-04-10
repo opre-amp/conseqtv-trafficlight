@@ -36,12 +36,12 @@ static void switch_state(state _state)
         case BL_YELLOW:     red(0); yellow(2); green(0); pred(0); pgreen(0); break;
         case YELLOW:        red(0); yellow(1); green(0); pred(1); pgreen(0); break;
         case RED_PR_1:      red(1); yellow(0); green(0); pred(1); pgreen(0); break;
-        case RED_PG:        red(1); yellow(0); green(0); pred(0); pgreen(1); break;
+        case RED_PG:        red(1); yellow(0); green(0); pred(0); pgreen(1); is_signalled = 0; break;
         case RED_PG_STOP:   red(1); yellow(0); green(0); pred(0); pgreen(1); break;
         case RED_BL:        red(1); yellow(0); green(0); pred(0); pgreen(2); break;
         case RED_PR_2:      red(0); yellow(0); green(0); pred(1); pgreen(0); break;
         case RED_YELLOW:    red(1); yellow(1); green(0); pred(1); pgreen(0); break;
-        case GREEN:         red(0); yellow(0); green(1); pred(1); pgreen(0); break;
+        case GREEN:         red(0); yellow(0); green(1); pred(1); pgreen(0); is_stopped = 0; break;
         case GREEN_SIGNAL:  red(0); yellow(0); green(1); pred(1); pgreen(0); break;
     }
 
@@ -114,4 +114,20 @@ void send_signal(signal _signal)
     }
     step_until_wait();
 
+}
+
+void set_time_A(int time) { time_A = time; }
+void set_time_B(int time) { time_B = time; }
+void set_time_C(int time) { time_C = time; }
+void set_time_C_(int time) { time_C_ = time; }
+void set_time_D(int time) { time_D = time; }
+void set_time_E(int time) { time_E = time; }
+void set_time_F(int time) { time_F = time; }
+void set_time_G(int time) { time_G = time; }
+void set_time_H(int time) { time_H = time; }
+
+void sample_sensors()
+{
+    if(!is_signalled) is_signalled = pedestrian_signal();
+    if(!is_stopped) is_stopped = stopped_car();
 }

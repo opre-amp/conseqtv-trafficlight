@@ -1,8 +1,9 @@
 #include "mailbox_api.h"
 #include "user_software.h"
 #include "traffic_light.h"
+#include "communication.h"
 
-byte stop_flag = 1;
+byte stop_flag = 0;
 
 void send_police() {send_signal(POLICE);}
 void switch_off() {send_signal(SWITCH_OFF);}
@@ -10,21 +11,19 @@ void switch_on() {send_signal(SWITCH_ON);}
 
 void setup()
 {
-    schedule(1000, switch_on);
-    schedule(5000, switch_off);
-    schedule(10000, switch_on);
-    schedule(15000, send_police);
-    schedule(35000, send_police);
+    send_heartbeat();
 }
+
 void loop()
 {
+    handle_incoming();
     run_jobs();
 }
 
 int main()
 {
     setup();
-    while (stop_flag) {
+    while (!stop_flag) {
         loop();
     }
 }

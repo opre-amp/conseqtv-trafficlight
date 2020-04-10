@@ -2,7 +2,7 @@
 .globl _start
 _start:
 
-  ldr r0,=0x28000000
+  ldr r0,=0x29000000
   ldr r1,=0xDEADBEEF
   ldr r2,[r0]
   cmp r1,r2
@@ -34,7 +34,7 @@ _start:
   mcr p15,0,r2,c1,c0,0
   ldr sp,=0x30000000
 
-  ldr r0,=0x28000000
+  ldr r0,=0x29000000
   ldr r1,=0xDEADBEEF
   str r1,[r0]
 

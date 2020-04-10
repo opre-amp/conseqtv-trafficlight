@@ -19,6 +19,16 @@ void pred(char state);
 void pgreen(char state);
 
 /*
+ * These functions test the various leds of the system
+ */
+
+char test_red();
+char test_yellow();
+char test_green();
+char test_pred();
+char test_pgreen();
+
+/*
  * Returns 1 if the pedestrian signal is pressed, 0 otherwise
  */
 int pedestrian_signal();
