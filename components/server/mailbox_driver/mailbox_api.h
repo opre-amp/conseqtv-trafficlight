@@ -1,10 +1,6 @@
 #ifndef MAILBOX_API_H
 #define MAILBOX_API_H
 
-#ifdef __cplusplus
-extern "C"{
-#endif
-
 #define TX_BUFFER  0x28000000
 #define BUFFER_MAX 0x28ffffff
 #define MAILBOX_TX_SET 0x400000B4 /* Core 3 Mailbox 1 write-set */
@@ -15,12 +11,20 @@ extern "C"{
 
 typedef char byte;
 
+typedef struct 
+{
+    char string[255];
+    int len;
+} sstring;
+
 /*
  * Before and after using the mailboxes, call these functions, otherwise
  * resource leaks are created
  */
 void init_ptrs(void);
 void uninit_ptrs(void);
+
+sstring get_next_msg(void);
 
 /*
  * Send data to the linux host. Maximum 255 bytes at a time.
@@ -39,9 +43,5 @@ byte send_data(const byte* buffer, byte length);
  */
 int mbox(void* param);
 
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
