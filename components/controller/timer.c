@@ -57,6 +57,7 @@ void run_jobs()
                     queue[i].fp();
                }
             else if(queue[i].alternative && *(queue[i].alternative)) {
+                    send_data("Alternative function called!", 29);
                     queue[i].valid = 0;
                     queue[i].fpalt();
             }

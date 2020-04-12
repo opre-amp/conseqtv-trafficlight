@@ -16,6 +16,7 @@ void setup()
 
 void loop()
 {
+    sample_sensors();
     handle_incoming();
     run_jobs();
 }

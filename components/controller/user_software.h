@@ -63,6 +63,8 @@ void set_time_F(int time);
 void set_time_G(int time);
 void set_time_H(int time);
 
+void sample_sensors();
+
 
 
 #ifdef __cplusplus

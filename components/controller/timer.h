@@ -10,7 +10,7 @@ typedef struct
     char valid;
     unsigned int start;
     unsigned int after;
-    char* alternative;
+    volatile char* alternative;
     void (*fp)(void);    
     void (*fpalt)(void);    
 } job;

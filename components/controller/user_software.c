@@ -8,15 +8,15 @@ signal signalqueue[QUEUE_SIZE] = {0};
 static job *timing_job = 0;
 static char is_stopped = 0;
 static char is_signalled = 0;
-static int time_A = 1000;
-static int time_B = 1000;
-static int time_C = 1000;
-static int time_C_ = 1000;
-static int time_D = 1000;
+static int time_A = 2000;
+static int time_B = 2000;
+static int time_C = 5000;
+static int time_C_ = 0010;
+static int time_D = 2000;
 static int time_E = 1000;
-static int time_F = 1000;
-static int time_G = 1000;
-static int time_H = 1000;
+static int time_F = 2000;
+static int time_G = 5000;
+static int time_H = 0010;
 
 void enqueue_time_signal()
 {
@@ -26,9 +26,14 @@ void enqueue_stopped_signal()
 {
     send_signal(STOPPED);
 }
+#include "mailbox_api.h"
+char state_msg[] = "In state: ??";
 
 static void switch_state(state _state)
 {
+    state_msg[10] = _state/10 + '0';
+    state_msg[11] = _state%10 + '0';
+    send_data(state_msg, sizeof(state_msg));
     light_state = _state;
     switch(light_state)
     {
@@ -39,7 +44,7 @@ static void switch_state(state _state)
         case RED_PG:        red(1); yellow(0); green(0); pred(0); pgreen(1); is_signalled = 0; break;
         case RED_PG_STOP:   red(1); yellow(0); green(0); pred(0); pgreen(1); break;
         case RED_BL:        red(1); yellow(0); green(0); pred(0); pgreen(2); break;
-        case RED_PR_2:      red(0); yellow(0); green(0); pred(1); pgreen(0); break;
+        case RED_PR_2:      red(1); yellow(0); green(0); pred(1); pgreen(0); break;
         case RED_YELLOW:    red(1); yellow(1); green(0); pred(1); pgreen(0); break;
         case GREEN:         red(0); yellow(0); green(1); pred(1); pgreen(0); is_stopped = 0; break;
         case GREEN_SIGNAL:  red(0); yellow(0); green(1); pred(1); pgreen(0); break;
@@ -86,6 +91,10 @@ static void step_until_wait()
                     case GREEN:         switch_state(GREEN_SIGNAL); break;
                     case GREEN_SIGNAL:  switch_state(YELLOW); break;
                 }
+                break;
+            case STOPPED:
+                if(light_state == RED_PG) switch_state(RED_PG_STOP);
+                break;
             default: break;
         }
         signalqueue[i] = NOTHING;
@@ -126,8 +135,18 @@ void set_time_F(int time) { time_F = time; }
 void set_time_G(int time) { time_G = time; }
 void set_time_H(int time) { time_H = time; }
 
+char signal_buf[] = "Pedestrian signal received!";
+char stopped_buf[]= "Car stopped signal received!";
+
 void sample_sensors()
 {
-    if(!is_signalled) is_signalled = pedestrian_signal();
-    if(!is_stopped) is_stopped = stopped_car();
+    if(!is_signalled) {
+        is_signalled = pedestrian_signal() ? 1 : 0;
+        if(is_signalled) while(!send_data(signal_buf, sizeof(signal_buf)));
+    }
+    if(!is_stopped) {
+        is_stopped = stopped_car() ? 1 : 0;
+        if(is_stopped) while(!send_data(stopped_buf, sizeof(stopped_buf)));
+    }
+
 }

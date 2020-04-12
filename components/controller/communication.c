@@ -70,6 +70,7 @@ void handle_incoming()
     byte length;
     if((length = receive_data(buffer, sizeof(buffer)))) {
         if (streq(buffer, stop, param1_size)) {
+            set_state(OFF);
             stop_flag = 1;
             while(!send_data(stopped, sizeof(stopped)));
             return;
