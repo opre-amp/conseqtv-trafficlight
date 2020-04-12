@@ -186,11 +186,11 @@ static int reader(void* param)
             if(!*flag) return 0;
         }
         if(error_indicator) {
-            error_hndlr(buf);
+            if(error_hndlr) error_hndlr(buf);
             error_indicator = 0;
         }
         else if(!strcmp(buf, heartbeat)) {
-            heartbeat_hndlr();
+            if(heartbeat_hndlr) heartbeat_hndlr();
         }
         else if(!strcmp(buf, error)) {
             error_indicator = 1;
