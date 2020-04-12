@@ -12,6 +12,7 @@ volatile byte** mailbox_tx_set;
 volatile byte** mailbox_tx_clr;
 struct task_struct* mbox_task;
 struct mutex list_mtx;
+char log_flag = 0;
 
 void init_ptrs()
 {
@@ -24,6 +25,8 @@ void init_ptrs()
 
 void uninit_ptrs()
 {
+    char stp_buf[] = "stop";
+    while(!send_data(stp_buf, sizeof(stp_buf)));
     flag = 0;
     kthread_stop(mbox_task);
     iounmap(mailbox_tx_clr);
@@ -40,9 +43,24 @@ typedef struct msgs_buffer_member msgs_buffer_member;
 msgs_buffer_member* head = NULL;
 msgs_buffer_member* tail = NULL;
 
+void enable_logging(void)
+{
+    head = NULL;
+    tail = NULL;
+    log_flag = 1;    
+}
+void disable_logging(void)
+{
+    log_flag = 0;
+    while(head) {
+        msgs_buffer_member* tmp = head;
+        head = head->next;
+        kfree(head);
+    }
+}
+
 static void add_msg(msgs_buffer_member* str)
 {
-    printk(KERN_INFO "LIST: Adding message %s\n", str->msg.string);
     mutex_lock(&list_mtx);
     if(!head) {
         head = str;
@@ -67,7 +85,6 @@ sstring get_next_msg(void)
         tmp = head;
         if(tail == head) tail = NULL;
         head = head->next;
-        printk(KERN_INFO "LIST: Retrieving message %s (length: %d)\n", ret.string, ret.len);
 
         kfree(tmp);
     }
@@ -88,7 +105,6 @@ int mbox(void* param)
     volatile char *length;
     msgs_buffer_member* msg_member;
 
-    printk(KERN_INFO "Starting thread...\n");
     
     while (flag) {
         while(!(data = (void*)*clr) && flag);
@@ -102,13 +118,11 @@ int mbox(void* param)
         for(i = 0; i < *length; ++i)
             msg_member->msg.string[i] = data[i];
         msg_member->msg.string[(unsigned int)*length] = 0;
-        printk(KERN_INFO "Received data: %s (length %d)\n", msg_member->msg.string, *length);
-        add_msg(msg_member);
+        if(log_flag)add_msg(msg_member);
         *length = 0;
         iounmap(data);
         iounmap(length);
     }
-    printk(KERN_INFO "Shutting down thread...\n");
     iounmap(clr);
     iounmap(set);
     return 0;
@@ -139,7 +153,6 @@ byte send_data(const byte* buffer, byte length)
     if(*mailbox_tx_clr) return 0;
     base = buffer_data(buffer, length);
     if(!base) return 0;
-    printk(KERN_INFO "Sending data %s (length %d)\n", buffer, *base);
     *mailbox_tx_set = (byte*)(base - tx_base + TX_BUFFER);
     return length;
 }

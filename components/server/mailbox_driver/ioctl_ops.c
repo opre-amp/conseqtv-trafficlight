@@ -14,6 +14,13 @@
 static dev_t first;         // Global variable for the first device number 
 static struct cdev c_dev;   // Global variable for the character device structure
 static struct class *cl;    // Global variable for the device class
+int open_count = 0;
+
+static int mbox_open(struct inode *inode, struct file *file);
+static int mbox_release(struct inode *inode, struct file *file);
+static ssize_t mbox_read(struct file *filp, char __user *buf, size_t len,loff_t * off);
+static ssize_t mbox_write(struct file *filp, const char *buf, size_t len, loff_t * off);
+static long mbox_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
 
 static struct file_operations fops =
 {
@@ -59,30 +66,29 @@ void uninit_ioctl(void)
     device_destroy(cl, first);
     class_destroy(cl);
     unregister_chrdev_region(first, 1);
-    printk(KERN_INFO "Device Driver Remove...Done!!!\n");
 }
 
 static int mbox_open(struct inode *inode, struct file *file)
 {
-        printk(KERN_INFO "Device File Opened...!!!\n");
-        return 0;
+    if(!open_count) enable_logging();
+    ++open_count;
+    return 0;
 }
  
 static int mbox_release(struct inode *inode, struct file *file)
 {
-        printk(KERN_INFO "Device File Closed...!!!\n");
-        return 0;
+    --open_count;
+    if(!open_count) disable_logging();
+    return 0;
 }
  
 static ssize_t mbox_read(struct file *filp, char __user *buf, size_t len, loff_t *off)
 {
-        printk(KERN_INFO "Read Function\n");
-        return 0;
+    return -EINVAL;
 }
 static ssize_t mbox_write(struct file *filp, const char __user *buf, size_t len, loff_t *off)
 {
-        printk(KERN_INFO "Write function\n");
-        return 0;
+    return -EINVAL;
 }
  
 static long mbox_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
@@ -91,13 +97,11 @@ static long mbox_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
     switch(cmd) {
         case WRITE_SSTRING:
             if(copy_from_user(&buf ,(sstring*) arg, sizeof(sstring))) return -1;
-            printk(KERN_INFO "Sending data to controller: %s (length %d)\n", buf.string, buf.len);
             while(!send_data(buf.string, buf.len));
             break;
         case READ_SSTRING:
             buf = get_next_msg();
             if(buf.len == 0 || copy_to_user((char*) arg, buf.string, buf.len)) return -1;
-            printk(KERN_INFO "Getting data from the controller: %s\n", buf.string);
             break;
     }
     return 0;

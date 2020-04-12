@@ -24,6 +24,12 @@ typedef struct
 void init_ptrs(void);
 void uninit_ptrs(void);
 
+/*
+ * Enable and disable logging, depending on the number of open handlers.
+ */
+void enable_logging(void);
+void disable_logging(void);
+
 sstring get_next_msg(void);
 
 /*
