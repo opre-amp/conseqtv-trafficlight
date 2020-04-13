@@ -6,13 +6,13 @@
 
 #include "mailbox_api.h"
 
-char flag = 1;
+volatile char flag = 1;
 volatile byte* tx_base;
 volatile byte** mailbox_tx_set;
 volatile byte** mailbox_tx_clr;
 struct task_struct* mbox_task;
 struct mutex list_mtx;
-char log_flag = 0;
+volatile char log_flag = 0;
 
 void init_ptrs()
 {
@@ -55,7 +55,7 @@ void disable_logging(void)
     while(head) {
         msgs_buffer_member* tmp = head;
         head = head->next;
-        kfree(head);
+        kfree(tmp);
     }
 }
 

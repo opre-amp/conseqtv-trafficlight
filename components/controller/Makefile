@@ -1,4 +1,4 @@
-PREFIX = $(CROSS_COMPILE)
+PREFIX = $(CROSS_BARE)
 MEMORY = 0x20000000
 
 ARCH = -march=armv8.2-a -mtune=cortex-a53 -marm -mfpu=neon-fp-armv8 -mfloat-abi=hard
