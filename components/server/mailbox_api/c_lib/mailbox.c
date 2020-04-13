@@ -10,7 +10,7 @@
 #include <threads.h>
 #include <stdarg.h>
 
-#include "mailbox_api.h"
+#include "mailbox.h"
 
 typedef struct 
 {
