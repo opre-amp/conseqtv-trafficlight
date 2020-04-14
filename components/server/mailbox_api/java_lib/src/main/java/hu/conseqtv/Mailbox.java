@@ -4,6 +4,15 @@ public class Mailbox {
 
     public static void main(String[] args) {
         Mailbox mailbox = new Mailbox();
+        mailbox.register_error_handler(new ErrorHandler(){
+            public void handle(String s) { System.out.println(s);}
+        });
+        mailbox.send_signal("switch1");
+        try{
+            Thread.sleep(3000);
+        }catch(Exception e){e.printStackTrace();}
+        mailbox.send_signal("police!");
+        mailbox.send_signal("police_");
     }
 
     public Mailbox() {
@@ -19,7 +28,7 @@ public class Mailbox {
     static {
         System.loadLibrary("pthread");
         System.loadLibrary("mailbox");
-        System.loadLibrary("mailbox-javacompat");
+        System.loadLibrary("mailbox_javacompat");
     }
 
     private native int init_mailbox();

@@ -1,4 +1,4 @@
-PREFIX = arm-linux-gnueabihf-
+PREFIX = $(CROSS_LINUX)
 
 libmailbox.so: mailbox.o
 	$(PREFIX)gcc -shared -o $@ $^

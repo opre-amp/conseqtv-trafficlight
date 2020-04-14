@@ -5,7 +5,7 @@ export
 
 DEB_NAME = conseqtv-server
 
-ARTIFACTS = controller.img loader mailbox.ko zImage modules.tar.gz dtbs.tar.gz u-boot.bin boot.cmd config.txt libmailbox.so libmailbox_javacompat.so server.jar
+ARTIFACTS = controller.img loader mailbox.ko zImage modules.tar.gz dtbs.tar.gz u-boot.bin boot.scr config.txt libmailbox.so libmailbox_javacompat.so server.jar
 
 PI := bcm2710-rpi-3-b-plus
 
@@ -27,14 +27,14 @@ $(DEB_NAME).deb: $(ARTIFACTS) control postinst
 	mkdir -p $(DEB_NAME)/usr/bin
 	cp loader $(DEB_NAME)/usr/bin/loader
 	cd $(DEB_NAME) && tar xzf ../modules.tar.gz
-	mkdir -p $(DEB_NAME)/lib/modules/*/kernel/extra/ 
+	mkdir -p $(DEB_NAME)/lib/modules/$$(basename $(DEB_NAME)/lib/modules/*)/kernel/extra/ 
 	cp mailbox.ko $(DEB_NAME)/lib/modules/*/kernel/extra/
-	mkdir -p $(DEB_NAME)/boot
-	cp zImage $(DEB_NAME)/boot/
-	cd $(DEB_NAME)/boot && tar xzf ../../dtbs.tar.gz
-	cp u-boot.bin $(DEB_NAME)/boot/
-	cp boot.scr $(DEB_NAME)/boot/
-	cp config.txt $(DEB_NAME)/boot/
+	mkdir -p $(DEB_NAME)/tmp/boot
+	cp zImage $(DEB_NAME)/tmp/boot/
+	cd $(DEB_NAME)/tmp/boot && tar xzf ../../../dtbs.tar.gz
+	cp u-boot.bin $(DEB_NAME)/tmp/boot/
+	cp boot.scr $(DEB_NAME)/tmp/boot/
+	cp config.txt $(DEB_NAME)/tmp/boot/
 	mkdir -p $(DEB_NAME)/usr/lib
 	cp libmailbox.so $(DEB_NAME)/usr/lib/
 	cp libmailbox_javacompat.so $(DEB_NAME)/usr/lib/
@@ -44,10 +44,10 @@ $(DEB_NAME).deb: $(ARTIFACTS) control postinst
 
 
 control:
-	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: armhf\nReplaces: raspberrypi-kernel\nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
+	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: armhf\nReplaces: raspberrypi-kernel\nDepends: openjdk-8-jre\nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
 
 postinst:
-	printf "#!/bin/bash\ndepmod -a\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
+	printf "#!/bin/bash\nsudo cp -r /tmp/boot/* /boot/\nsudo depmod -a\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
 	chmod 755 $@
 
 

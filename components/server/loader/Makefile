@@ -1,4 +1,4 @@
-PREFIX = arm-linux-gnueabihf-
+PREFIX = $(CROSS_LINUX)
 
 loader: loader.o
 	$(PREFIX)gcc -o $@ $^
