@@ -20,3 +20,4 @@ deploy:
   file: build/conseqtv-server.deb
   on:
     repo: opre-amp/conseqtv-trafficlight
+    tags: true
