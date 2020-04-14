@@ -1,4 +1,3 @@
-CROSS_LINUX = $(CROSS_LINUX)
 obj-m += mailbox.o
 mailbox-objs += mailbox_api.o mailbox_driver.o ioctl_ops.o
 

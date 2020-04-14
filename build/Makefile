@@ -38,16 +38,16 @@ $(DEB_NAME).deb: $(ARTIFACTS) control postinst
 	mkdir -p $(DEB_NAME)/usr/lib
 	cp libmailbox.so $(DEB_NAME)/usr/lib/
 	cp libmailbox_javacompat.so $(DEB_NAME)/usr/lib/
-	cp server.jar $(DEB_NAME)/usr/share/$(DEB_NAME)/
+	cp server.jar $(DEB_NAME)/tmp/
 	dpkg-deb --build $(DEB_NAME)
 
 
 
 control:
-	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: armhf\nReplaces: raspberrypi-kernel\nDepends: openjdk-8-jre\nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
+	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: armhf\nReplaces: raspberrypi-kernel\nDepends: openjdk-8-jre-headless\nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
 
 postinst:
-	printf "#!/bin/bash\nsudo cp -r /tmp/boot/* /boot/\nsudo depmod -a\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
+	printf "#!/bin/bash\nsudo cp /tmp/server.jar /home/$$USER/\nsudo cp -r /tmp/boot/* /boot/\nsudo depmod -a\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
 	chmod 755 $@
 
 
