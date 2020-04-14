@@ -17,11 +17,11 @@ UBOOT_REPO := git://git.denx.de/u-boot.git
 UBOOT_CONFIG := rpi_2_defconfig
 
 
-$(DEB_NAME).deb: $(ARTIFACTS) control config
+$(DEB_NAME).deb: $(ARTIFACTS) control postinst
 	mkdir -p $(DEB_NAME)
 	mkdir -p $(DEB_NAME)/DEBIAN
 	cp control $(DEB_NAME)/DEBIAN/
-	cp config $(DEB_NAME)/DEBIAN/
+	cp postinst $(DEB_NAME)/DEBIAN/
 	mkdir -p $(DEB_NAME)/usr/share/$(DEB_NAME)
 	cp controller.img $(DEB_NAME)/usr/share/$(DEB_NAME)/
 	mkdir -p $(DEB_NAME)/usr/bin
@@ -31,9 +31,9 @@ $(DEB_NAME).deb: $(ARTIFACTS) control config
 	cp mailbox.ko $(DEB_NAME)/lib/modules/*/kernel/extra/
 	mkdir -p $(DEB_NAME)/boot
 	cp zImage $(DEB_NAME)/boot/
-	cd $(DEB_NAME) && tar xzf ../dtbs.tar.gz
+	cd $(DEB_NAME)/boot && tar xzf ../../dtbs.tar.gz
 	cp u-boot.bin $(DEB_NAME)/boot/
-	cp boot.cmd $(DEB_NAME)/boot/
+	cp boot.scr $(DEB_NAME)/boot/
 	cp config.txt $(DEB_NAME)/boot/
 	mkdir -p $(DEB_NAME)/usr/lib
 	cp libmailbox.so $(DEB_NAME)/usr/lib/
@@ -44,9 +44,9 @@ $(DEB_NAME).deb: $(ARTIFACTS) control config
 
 
 control:
-	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: arm\nDepends: \nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
+	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: armhf\nReplaces: raspberrypi-kernel\nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
 
-config:
+postinst:
 	printf "#!/bin/bash\ndepmod -a\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
 	chmod 755 $@
 
