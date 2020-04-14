@@ -7,6 +7,9 @@ public class Mailbox {
         mailbox.register_error_handler(new ErrorHandler(){
             public void handle(String s) { System.out.println(s);}
         });
+        mailbox.register_heartbeat_handler(new HeartbeatHandler(){
+            public void handle() { System.out.println("Heartbeat");}
+        });
         mailbox.send_signal("switch1");
         try{
             Thread.sleep(3000);

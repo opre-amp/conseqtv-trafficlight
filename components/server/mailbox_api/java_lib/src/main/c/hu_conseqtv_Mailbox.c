@@ -13,12 +13,19 @@ JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_uninit_1mailbox
       return uninit_mailbox();
   }
 
+static JavaVM* vm = NULL;
+
 static JNIEnv* heartbeat_env;
 static jobject heartbeat_obj;
 static jmethodID heartbeat_mid;
+static int heartbeat_initialized = 0;
 
 static void handle_heartbeat() 
 {
+    if(!heartbeat_initialized) {
+        (*vm)->AttachCurrentThread(vm, (void**)&heartbeat_env, NULL);
+        heartbeat_initialized = 1;
+    }
     (*heartbeat_env)->CallVoidMethod(heartbeat_env, heartbeat_obj, heartbeat_mid);
 }
 
@@ -28,17 +35,24 @@ JNIEXPORT void JNICALL Java_hu_conseqtv_Mailbox_register_1heartbeat_1handler
       heartbeat_obj = obj;
       jclass cls = (*env)->GetObjectClass(env, obj);
       heartbeat_mid = (*env)->GetMethodID(env, cls, "handle", "()V");
+      if(!vm)(*env)->GetJavaVM(env, &vm);
+      heartbeat_initialized = 0;
       register_heartbeat_handler(handle_heartbeat);
   }
 
 static JNIEnv* err_env;
 static jobject err_obj;
 static jmethodID err_mid;
+static int err_initialized = 0;
 
 static void handle_err(char* buf) 
 {
+    if(!err_initialized) {
+        (*vm)->AttachCurrentThread(vm, (void**)&err_env, NULL);
+        err_initialized = 1;
+    }
     jstring str = (*err_env)->NewStringUTF(err_env, buf);
-    (*err_env)->CallObjectMethod(err_env, err_obj, err_mid, str);
+    (*err_env)->CallVoidMethod(err_env, err_obj, err_mid, str);
 }
 
 JNIEXPORT void JNICALL Java_hu_conseqtv_Mailbox_register_1error_1handler
@@ -47,6 +61,8 @@ JNIEXPORT void JNICALL Java_hu_conseqtv_Mailbox_register_1error_1handler
       err_obj = obj;
       jclass cls = (*env)->GetObjectClass(env, obj);
       err_mid = (*env)->GetMethodID(env, cls, "handle", "(Ljava/lang/String;)V");
+      if(!vm)(*env)->GetJavaVM(env, &vm);
+      err_initialized = 0;
       register_error_handler(handle_err);
   }
 
