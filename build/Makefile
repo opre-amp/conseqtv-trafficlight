@@ -47,8 +47,8 @@ control:
 	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: arm\nDepends: \nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
 
 config:
-	printf "#!/bin/bash\ndepmod -a\necho "You will have to restart this machine for the changes to take effect.\n" > $@
-
+	printf "#!/bin/bash\ndepmod -a\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
+	chmod 755 $@
 
 
 controller.img: $(COMPONENTS_PATH)/controller/controller.img
