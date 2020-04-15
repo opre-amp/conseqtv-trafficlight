@@ -1,14 +1,14 @@
 #include <string.h>
 #include <mailbox.h>
 
-#include "hu_conseqtv_Mailbox.h"
+#include "hu_conseqtv_TrafficLight.h"
 
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_initMailbox
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_initMailbox
   (JNIEnv * env, jobject obj) {
       return init_mailbox();
   }
 
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_uninitMailbox
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_uninitMailbox
   (JNIEnv * env, jobject obj) {
       return uninit_mailbox();
   }
@@ -20,7 +20,7 @@ static jobject heartbeat_obj;
 static jmethodID heartbeat_mid;
 static int heartbeat_initialized = 0;
 
-static void handleHeartbeat() 
+static void handle_heartbeat() 
 {
     if(!heartbeat_initialized) {
         (*vm)->AttachCurrentThread(vm, (void**)&heartbeat_env, NULL);
@@ -29,7 +29,7 @@ static void handleHeartbeat()
     (*heartbeat_env)->CallVoidMethod(heartbeat_env, heartbeat_obj, heartbeat_mid);
 }
 
-JNIEXPORT void JNICALL Java_hu_conseqtv_Mailbox_registerHeartbeatHhandler
+JNIEXPORT void JNICALL Java_hu_conseqtv_TrafficLight_registerHeartbeatHhandler
   (JNIEnv * env, jobject _obj, jobject obj) {
       heartbeat_env = env;
       heartbeat_obj = obj;
@@ -45,7 +45,7 @@ static jobject err_obj;
 static jmethodID err_mid;
 static int err_initialized = 0;
 
-static void handleErr(char* buf) 
+static void handle_err(char* buf) 
 {
     if(!err_initialized) {
         (*vm)->AttachCurrentThread(vm, (void**)&err_env, NULL);
@@ -55,7 +55,7 @@ static void handleErr(char* buf)
     (*err_env)->CallVoidMethod(err_env, err_obj, err_mid, str);
 }
 
-JNIEXPORT void JNICALL Java_hu_conseqtv_Mailbox_registerErrorHandler
+JNIEXPORT void JNICALL Java_hu_conseqtv_TrafficLight_registerErrorHandler
   (JNIEnv * env, jobject _obj, jobject obj) {
       err_env = env;
       err_obj = obj;
@@ -66,13 +66,13 @@ JNIEXPORT void JNICALL Java_hu_conseqtv_Mailbox_registerErrorHandler
       register_error_handler(handle_err);
   }
 
-JNIEXPORT jstring JNICALL Java_hu_conseqtv_Mailbox_getState
+JNIEXPORT jstring JNICALL Java_hu_conseqtv_TrafficLight_getState
   (JNIEnv * env, jobject obj) {
       char buf[50];
       return get_state(buf, 50) ? (*env)->NewStringUTF(env, buf) : (*env)->NewStringUTF(env, "ERR");
   }
 
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_setState
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_setState
   (JNIEnv * env, jobject _obj, jstring str) {
       char buf[50];
       const char *ptr;
@@ -81,7 +81,7 @@ JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_setState
       return set_state(buf);
   }
 
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_sendSignal
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_sendSignal
   (JNIEnv * env, jobject _obj, jstring str) {
       char buf[50];   
       const char *ptr;
@@ -90,64 +90,64 @@ JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_sendSignal
       return send_signal(buf);
   }
 
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_setTimeA
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_setTimeA
   (JNIEnv * env, jobject _obj, jint time) {
       return set_time_A(time);
   }
 
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_setTimeB
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_setTimeB
   (JNIEnv * env, jobject _obj, jint time) {
       return set_time_B(time);
   }
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_setTimeC
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_setTimeC
   (JNIEnv * env, jobject _obj, jint time) {
       return set_time_C(time);
   }
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_setTimeC_1
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_setTimeC_1
   (JNIEnv * env, jobject _obj, jint time) {
       return set_time_C_(time);
   }
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_setTimeD
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_setTimeD
   (JNIEnv * env, jobject _obj, jint time) {
       return set_time_D(time);
   }
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_setTimeE
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_setTimeE
   (JNIEnv * env, jobject _obj, jint time) {
       return set_time_E(time);
   }
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_setTimeF
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_setTimeF
   (JNIEnv * env, jobject _obj, jint time) {
       return set_time_F(time);
   }
 
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_setTimeG
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_setTimeG
   (JNIEnv * env, jobject _obj, jint time) {
       return set_time_G(time);
   }
 
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_setTimeH
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_setTimeH
   (JNIEnv * env, jobject _obj, jint time) {
       return set_time_H(time);
   }
 
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_testRed
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_testRed
   (JNIEnv * env, jobject obj) {
       return test_red();
   }
 
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_testYlw
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_testYlw
   (JNIEnv * env, jobject obj) {
       return test_ylw();
   }
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_testGrn
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_testGrn
   (JNIEnv * env, jobject obj) {
       return test_grn();
   }
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_testPred
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_testPred
   (JNIEnv * env, jobject obj) {
       return test_pred();
   }
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_testPgrn
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_testPgrn
   (JNIEnv * env, jobject obj) {
       return test_pgrn();
   }
