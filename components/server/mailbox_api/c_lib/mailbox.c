@@ -278,18 +278,18 @@ int get_state(char* buf, int len)
     int ret = call_async(&get_state_cnd, 1, create_sstring(1, recv));
     if(!ret) return -1;
     switch(setstate_scanned_param) {
-        case ERR:          if(strlen("ERR") < len) { strcpy(buf, "ERR"); } else { return -1; } break;
-        case OFF:          if(strlen("OFF") < len) { strcpy(buf, "OFF"); } else { return -1; } break;
-        case BL_YELLOW:    if(strlen("BL_YELLOW") < len) { strcpy(buf, "BL_YELLOW"); } else { return -1; } break;
-        case YELLOW:       if(strlen("YELLOW") < len) { strcpy(buf, "YELLOW"); } else { return -1; } break;
-        case RED_PR_1:     if(strlen("RED_PR_1") < len) { strcpy(buf, "RED_PR_1"); } else { return -1; } break;
-        case RED_PG:       if(strlen("RED_PG") < len) { strcpy(buf, "RED_PG"); } else { return -1; } break;
-        case RED_PG_STOP:  if(strlen("RED_PG_STOP") < len) { strcpy(buf, "RED_PG_STOP"); } else { return -1; } break;
-        case RED_BL:       if(strlen("RED_BL") < len) { strcpy(buf, "RED_BL"); } else { return -1; } break;
-        case RED_PR_2:     if(strlen("RED_PR_2") < len) { strcpy(buf, "RED_PR_2"); } else { return -1; } break;
-        case RED_YELLOW:   if(strlen("RED_YELLOW") < len) { strcpy(buf, "RED_YELLOW"); } else { return -1; } break;
-        case GREEN:        if(strlen("GREEN") < len) { strcpy(buf, "GREEN"); } else { return -1; } break;
-        case GREEN_SIGNAL: if(strlen("GREEN_SIGNAL") < len) { strcpy(buf, "GREEN_SIGNAL"); } else { return -1; } break;
+        case ERR:          if(strlen("ERR") < len) { strcpy(buf, "Error"); } else { return -1; } break;
+        case OFF:          if(strlen("OFF") < len) { strcpy(buf, "Off"); } else { return -1; } break;
+        case BL_YELLOW:    if(strlen("BL_YELLOW") < len) { strcpy(buf, "Blinking yellow"); } else { return -1; } break;
+        case YELLOW:       if(strlen("YELLOW") < len) { strcpy(buf, "Yellow"); } else { return -1; } break;
+        case RED_PR_1:     if(strlen("RED_PR_1") < len) { strcpy(buf, "Red & pedestrian red (1)"); } else { return -1; } break;
+        case RED_PG:       if(strlen("RED_PG") < len) { strcpy(buf, "Red & pedestrian green"); } else { return -1; } break;
+        case RED_PG_STOP:  if(strlen("RED_PG_STOP") < len) { strcpy(buf, "Red & pedestrian green & stop"); } else { return -1; } break;
+        case RED_BL:       if(strlen("RED_BL") < len) { strcpy(buf, "Red & blinking pedestrian green"); } else { return -1; } break;
+        case RED_PR_2:     if(strlen("RED_PR_2") < len) { strcpy(buf, "Red & pedestrian red (2)"); } else { return -1; } break;
+        case RED_YELLOW:   if(strlen("RED_YELLOW") < len) { strcpy(buf, "Red-yellow"); } else { return -1; } break;
+        case GREEN:        if(strlen("GREEN") < len) { strcpy(buf, "Green"); } else { return -1; } break;
+        case GREEN_SIGNAL: if(strlen("GREEN_SIGNAL") < len) { strcpy(buf, "Green & signal"); } else { return -1; } break;
     }
     return 0;
 }
@@ -299,18 +299,18 @@ int set_state(char* buf)
 {
     int state_id, ret;
     char number_buf[3] = "xx";
-    if(!strcmp("ERR", buf)) { state_id = ERR; }
-    else if(!strcmp("OFF", buf)) { state_id = OFF; }
-    else if(!strcmp("BL_YELLOW", buf)) { state_id = BL_YELLOW; }
-    else if(!strcmp("YELLOW", buf)) { state_id = YELLOW; }
-    else if(!strcmp("RED_PR_1", buf)) { state_id = RED_PR_1; }
-    else if(!strcmp("RED_PG", buf)) { state_id = RED_PG; }
-    else if(!strcmp("RED_PG_STOP", buf)) { state_id = RED_PG_STOP; }
-    else if(!strcmp("RED_BL", buf)) { state_id = RED_BL; }
-    else if(!strcmp("RED_PR_2", buf)) { state_id = RED_PR_2; }
-    else if(!strcmp("RED_YELLOW", buf)) { state_id = RED_YELLOW; }
-    else if(!strcmp("GREEN", buf)) { state_id = GREEN; }
-    else if(!strcmp("GREEN_SIGNAL", buf)) { state_id = GREEN_SIGNAL; }
+    if(!strcmp("Error", buf)) { state_id = ERR; }
+    else if(!strcmp("Off", buf)) { state_id = OFF; }
+    else if(!strcmp("Blinking yellow", buf)) { state_id = BL_YELLOW; }
+    else if(!strcmp("Yellow", buf)) { state_id = YELLOW; }
+    else if(!strcmp("Red & pedestrian red (1)", buf)) { state_id = RED_PR_1; }
+    else if(!strcmp("Red & pedestrian green", buf)) { state_id = RED_PG; }
+    else if(!strcmp("Red & pedestrian green & stop", buf)) { state_id = RED_PG_STOP; }
+    else if(!strcmp("Red & blinking pedestrian green", buf)) { state_id = RED_BL; }
+    else if(!strcmp("Red & pedestrian red (2)", buf)) { state_id = RED_PR_2; }
+    else if(!strcmp("Red-yellow", buf)) { state_id = RED_YELLOW; }
+    else if(!strcmp("Green", buf)) { state_id = GREEN; }
+    else if(!strcmp("Green & signal", buf)) { state_id = GREEN_SIGNAL; }
     else return -1;
     sprintf(number_buf, "%02d", state_id);
 

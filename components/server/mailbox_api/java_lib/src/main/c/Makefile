@@ -13,7 +13,7 @@ hu_conseqtv_Mailbox.o: hu_conseqtv_Mailbox.c hu_conseqtv_Mailbox.h
 	$(PREFIX)gcc $(INCLUDE_LIST) -fPIC -c -o $@ $<
 
 hu_conseqtv_Mailbox.h: $(COMPONENTS_PATH)/server/mailbox_api/java_lib/build/classes/java/main/hu/conseqtv/Mailbox.class
-	cd $(COMPONENTS_PATH)/server/mailbox_api/java_lib/build/classes/java/main/ && javah -jni -v -d $(COMPONENTS_PATH)/server/mailbox_api/java_lib/src/main/c hu.conseqtv.Mailbox
+	cd $(COMPONENTS_PATH)/server/mailbox_api/java_lib/build/classes/java/main/ && javah -jni -v -d $(COMPONENTS_PATH)/server/mailbox_api/java_lib/src/main/c hu.conseqtv.TrafficLight
 
 $(COMPONENTS_PATH)/server/mailbox_api/java_lib/build/classes/java/main/hu/conseqtv/Mailbox.class: $(COMPONENTS_PATH)/server/mailbox_api/java_lib/src/main/java/hu/conseqtv/Mailbox.java
 	cd $(COMPONENTS_PATH)/server/mailbox_api/java_lib && ./gradlew build
