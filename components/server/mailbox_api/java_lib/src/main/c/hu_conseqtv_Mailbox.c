@@ -3,7 +3,7 @@
 
 #include "hu_conseqtv_Mailbox.h"
 
-JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_init_1mailbox
+JNIEXPORT jint JNICALL Java_hu_conseqtv_Mailbox_initMailbox
   (JNIEnv * env, jobject obj) {
       return init_mailbox();
   }

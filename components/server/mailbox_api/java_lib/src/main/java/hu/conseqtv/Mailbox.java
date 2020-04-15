@@ -1,6 +1,10 @@
 package hu.conseqtv;
 
 public class Mailbox {
+    static {
+        System.loadLibrary("mailbox_javacompat");
+        System.loadLibrary("mailbox");
+    }
 
     public static void main(String[] args) {
         Mailbox mailbox = new Mailbox();
@@ -19,7 +23,7 @@ public class Mailbox {
     }
 
     public Mailbox() {
-        init_mailbox();
+        initMailbox();
     }
 
     @Override
@@ -28,13 +32,7 @@ public class Mailbox {
         super.finalize();
     }
 
-    static {
-        System.loadLibrary("pthread");
-        System.loadLibrary("mailbox");
-        System.loadLibrary("mailbox_javacompat");
-    }
-
-    private native int init_mailbox();
+    private native int initMailbox();
     private native int uninit_mailbox();
 
     public native void register_heartbeat_handler(HeartbeatHandler handler);

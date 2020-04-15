@@ -7,7 +7,7 @@ INCLUDE_LIST += -I$(COMPONENTS_PATH)/server/mailbox_api/c_lib
 LIBRARY_PATH = -L$(COMPONENTS_PATH)/server/mailbox_api/c_lib
 
 libmailbox_javacompat.so: hu_conseqtv_Mailbox.o
-	$(PREFIX)gcc -shared $(LIBRARY_PATH) -lmailbox -o $@ $^
+	$(PREFIX)gcc -shared -o $@ $^ $(LIBRARY_PATH) -lmailbox
 
 hu_conseqtv_Mailbox.o: hu_conseqtv_Mailbox.c hu_conseqtv_Mailbox.h
 	$(PREFIX)gcc $(INCLUDE_LIST) -fPIC -c -o $@ $<
