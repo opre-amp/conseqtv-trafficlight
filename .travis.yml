@@ -1,6 +1,5 @@
 sudo: required
 dist: bionic
-if: tag IS present
 install:
 - sudo apt-get update && sudo apt-get install docker.io flex bison u-boot-tools gcc-8-arm-linux-gnueabihf-base gcc-arm-none-eabi
 script:
