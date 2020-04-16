@@ -73,7 +73,7 @@ static char tostate[]   = "tostate";
 static char stopped[]   = "Stopping program...";
 static char recving[]   = "Retrieving state: %02d";
 static char timeset[]   = "Setting time %c to: %06d";
-static char sending[]   = "Sending %5s";
+static char sending[]   = "Sending %s";
 static char setstate[]  = "Sending state to %02d";
 static char testing[]   = "Testing %7s";
 static char resultok[]  = "Test result: ok"; 
@@ -138,6 +138,7 @@ int init_mailbox()
     cnd_init(&set_state_cnd);
     fd = open("/dev/mbox", O_RDWR);
     if(fd < 0) {
+        if(error_hndlr) error_hndlr("Could not open /dev/mbox!");
         return -1;
     }
     thrd_create(&reader_thread, reader, &flag);
@@ -258,17 +259,19 @@ static int call_async(cnd_t* cond_var, int sec, sstring param)
 static sstring create_sstring(int count, ...)
 {
     sstring buf;
-    char* ptr = buf.string;
+    char* ptr = buf.string, *tmp;
     va_list ap;
     va_start(ap, count);
     for(int i = 0; i < count; ++i) {
-        sprintf(ptr, va_arg(ap, char*));
-        ptr = buf.string + strlen(buf.string);
-        ptr[0] = ' ';
-        ++ptr;
+        strcpy(ptr, tmp = va_arg(ap, char*));
+        ptr += strlen(tmp);
+        if(i < count - 1) {
+            ptr[0] = ' ';
+            ++ptr;
+        }
+        else ptr[0] = 0;
     } 
-    buf.len=strlen(buf.string);
-    buf.string[buf.len-1] = 0;
+    buf.len=strlen(buf.string) + 1;
     return buf;
 }
 
@@ -276,20 +279,23 @@ static sstring create_sstring(int count, ...)
 int get_state(char* buf, int len)
 {
     int ret = call_async(&get_state_cnd, 1, create_sstring(1, recv));
-    if(!ret) return -1;
+    if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
     switch(setstate_scanned_param) {
-        case ERR:          if(strlen("ERR") < len) { strcpy(buf, "Error"); } else { return -1; } break;
-        case OFF:          if(strlen("OFF") < len) { strcpy(buf, "Off"); } else { return -1; } break;
-        case BL_YELLOW:    if(strlen("BL_YELLOW") < len) { strcpy(buf, "Blinking yellow"); } else { return -1; } break;
-        case YELLOW:       if(strlen("YELLOW") < len) { strcpy(buf, "Yellow"); } else { return -1; } break;
-        case RED_PR_1:     if(strlen("RED_PR_1") < len) { strcpy(buf, "Red & pedestrian red (1)"); } else { return -1; } break;
-        case RED_PG:       if(strlen("RED_PG") < len) { strcpy(buf, "Red & pedestrian green"); } else { return -1; } break;
-        case RED_PG_STOP:  if(strlen("RED_PG_STOP") < len) { strcpy(buf, "Red & pedestrian green & stop"); } else { return -1; } break;
-        case RED_BL:       if(strlen("RED_BL") < len) { strcpy(buf, "Red & blinking pedestrian green"); } else { return -1; } break;
-        case RED_PR_2:     if(strlen("RED_PR_2") < len) { strcpy(buf, "Red & pedestrian red (2)"); } else { return -1; } break;
-        case RED_YELLOW:   if(strlen("RED_YELLOW") < len) { strcpy(buf, "Red-yellow"); } else { return -1; } break;
-        case GREEN:        if(strlen("GREEN") < len) { strcpy(buf, "Green"); } else { return -1; } break;
-        case GREEN_SIGNAL: if(strlen("GREEN_SIGNAL") < len) { strcpy(buf, "Green & signal"); } else { return -1; } break;
+        case ERR:          if(strlen("ERR") < len) { strcpy(buf, "Error"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
+        case OFF:          if(strlen("OFF") < len) { strcpy(buf, "Off"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
+        case BL_YELLOW:    if(strlen("BL_YELLOW") < len) { strcpy(buf, "Blinking yellow"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
+        case YELLOW:       if(strlen("YELLOW") < len) { strcpy(buf, "Yellow"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
+        case RED_PR_1:     if(strlen("RED_PR_1") < len) { strcpy(buf, "Red & pedestrian red (1)"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
+        case RED_PG:       if(strlen("RED_PG") < len) { strcpy(buf, "Red & pedestrian green"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
+        case RED_PG_STOP:  if(strlen("RED_PG_STOP") < len) { strcpy(buf, "Red & pedestrian green & stop"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
+        case RED_BL:       if(strlen("RED_BL") < len) { strcpy(buf, "Red & blinking pedestrian green"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
+        case RED_PR_2:     if(strlen("RED_PR_2") < len) { strcpy(buf, "Red & pedestrian red (2)"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
+        case RED_YELLOW:   if(strlen("RED_YELLOW") < len) { strcpy(buf, "Red-yellow"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
+        case GREEN:        if(strlen("GREEN") < len) { strcpy(buf, "Green"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
+        case GREEN_SIGNAL: if(strlen("GREEN_SIGNAL") < len) { strcpy(buf, "Green & signal"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
     }
     return 0;
 }
@@ -311,11 +317,21 @@ int set_state(char* buf)
     else if(!strcmp("Red-yellow", buf)) { state_id = RED_YELLOW; }
     else if(!strcmp("Green", buf)) { state_id = GREEN; }
     else if(!strcmp("Green & signal", buf)) { state_id = GREEN_SIGNAL; }
-    else return -1;
+    else {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
     sprintf(number_buf, "%02d", state_id);
 
     ret = call_async(&set_state_cnd, 1, create_sstring(3, send, tostate, number_buf));
-    if(!ret || getstate_scanned_param != state_id) return -1;
+    if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
+    if(getstate_scanned_param != state_id) {
+        if(error_hndlr) error_hndlr("*CRITICAL* somehow set to wrong state.");
+        return -1;
+    }
     return 0;
 }
 
@@ -323,7 +339,14 @@ int send_signal(char* buf)
 {
     int ret;
     ret = call_async(&send_signal_cnd, 1, create_sstring(2, send, buf));
-    if(!ret || strcmp(buf, (char*)send_signal_scanned_param)) return -1;
+    if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
+    if(strcmp(buf, (char*)send_signal_scanned_param)) {
+        if(error_hndlr) error_hndlr(create_sstring(4, "*CRITICAL* somehow sent wrong signal:", send_signal_scanned_param, "instead of", buf).string);
+        return -1;
+    }
     return 0;
 }
 
@@ -331,90 +354,163 @@ int set_time_A(int time)
 {
     if(time / 1000000) return -1;
     int ret;
-    char time_buf[9];
-    sprintf(time_buf, "A %06d", time);
-    ret = call_async(&set_time_A_cnd, 1, create_sstring(2, time, time_buf));
-    if(!ret || strcmp(time_buf+2, (char*)set_time_A_scanned_param)) return -1;
+    char time_value_buf[10], answ_buf[10];
+    sprintf(time_value_buf, "A %06d", time);
+    sstring s;
+    ret = call_async(&set_time_A_cnd, 1, s = create_sstring(2, time_buf, time_value_buf));
+    if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
+    sprintf(answ_buf, "A %06d", set_time_A_scanned_param);
+    if(strcmp(time_value_buf, answ_buf)) {
+        if(error_hndlr) error_hndlr(create_sstring(4, "*CRITICAL* somehow set wrong time: ", answ_buf+2, "instead of", time_value_buf+2).string);
+        return -1;
+    }
     return 0;
 }
 int set_time_B(int time)
 {
     if(time / 1000000) return -1;
     int ret;
-    char time_buf[9];
-    sprintf(time_buf, "B %06d", time);
-    ret = call_async(&set_time_B_cnd, 1, create_sstring(2, time, time_buf));
-    if(!ret || strcmp(time_buf+2, (char*)set_time_B_scanned_param)) return -1;
+    char time_value_buf[10], answ_buf[10];
+    sprintf(time_value_buf, "B %06d", time);
+    ret = call_async(&set_time_B_cnd, 1, create_sstring(2, time_buf, time_value_buf));
+    if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
+    sprintf(answ_buf, "B %06d", set_time_B_scanned_param);
+    if(strcmp(time_value_buf, answ_buf)) {
+        if(error_hndlr) error_hndlr(create_sstring(4, "*CRITICAL* somehow set wrong time: ", answ_buf+2, "instead of", time_value_buf+2).string);
+        return -1;
+    }
     return 0;
 }
 int set_time_C(int time)
 {
     if(time / 1000000) return -1;
     int ret;
-    char time_buf[9];
-    sprintf(time_buf, "C %06d", time);
-    ret = call_async(&set_time_C_cnd, 1, create_sstring(2, time, time_buf));
-    if(!ret || strcmp(time_buf+2, (char*)set_time_C_scanned_param)) return -1;
+    char time_value_buf[10], answ_buf[10];
+    sprintf(time_value_buf, "C %06d", time);
+    ret = call_async(&set_time_C_cnd, 1, create_sstring(2, time_buf, time_value_buf));
+        if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
+    sprintf(answ_buf, "C %06d", set_time_C_scanned_param);
+    if(strcmp(time_value_buf, answ_buf)) {
+        if(error_hndlr) error_hndlr(create_sstring(4, "*CRITICAL* somehow set wrong time: ", answ_buf+2, "instead of", time_value_buf+2).string);
+        return -1;
+    }
     return 0;
 }
 int set_time_C_(int time)
 {
     if(time / 1000000) return -1;
     int ret;
-    char time_buf[9];
-    sprintf(time_buf, "c %06d", time);
-    ret = call_async(&set_time_C__cnd, 1, create_sstring(2, time, time_buf));
-    if(!ret || strcmp(time_buf+2, (char*)set_time_C__scanned_param)) return -1;
+    char time_value_buf[10], answ_buf[10];
+    sprintf(time_value_buf, "c %06d", time);
+    ret = call_async(&set_time_C__cnd, 1, create_sstring(2, time_buf, time_value_buf));
+        if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
+    sprintf(answ_buf, "c %06d", set_time_C__scanned_param);
+    if(strcmp(time_value_buf, answ_buf)) {
+        if(error_hndlr) error_hndlr(create_sstring(4, "*CRITICAL* somehow set wrong time: ", answ_buf+2, "instead of", time_value_buf+2).string);
+        return -1;
+    }
     return 0;
 }
 int set_time_D(int time)
 {
     if(time / 1000000) return -1;
     int ret;
-    char time_buf[9];
-    sprintf(time_buf, "D %06d", time);
-    ret = call_async(&set_time_D_cnd, 1, create_sstring(2, time, time_buf));
-    if(!ret || strcmp(time_buf+2, (char*)set_time_D_scanned_param)) return -1;
+    char time_value_buf[10], answ_buf[10];
+    sprintf(time_value_buf, "D %06d", time);
+    ret = call_async(&set_time_D_cnd, 1, create_sstring(2, time_buf, time_value_buf));
+        if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
+    sprintf(answ_buf, "D %06d", set_time_D_scanned_param);
+    if(strcmp(time_value_buf, answ_buf)) {
+        if(error_hndlr) error_hndlr(create_sstring(4, "*CRITICAL* somehow set wrong time: ", answ_buf+2, "instead of", time_value_buf+2).string);
+        return -1;
+    }
     return 0;
 }
 int set_time_E(int time)
 {
     if(time / 1000000) return -1;
     int ret;
-    char time_buf[9];
-    sprintf(time_buf, "E %06d", time);
-    ret = call_async(&set_time_E_cnd, 1, create_sstring(2, time, time_buf));
-    if(!ret || strcmp(time_buf+2, (char*)set_time_E_scanned_param)) return -1;
+    char time_value_buf[10], answ_buf[10];
+    sprintf(time_value_buf, "E %06d", time);
+    ret = call_async(&set_time_E_cnd, 1, create_sstring(2, time_buf, time_value_buf));
+        if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
+    sprintf(answ_buf, "E %06d", set_time_E_scanned_param);
+    if(strcmp(time_value_buf, answ_buf)) {
+        if(error_hndlr) error_hndlr(create_sstring(4, "*CRITICAL* somehow set wrong time: ", answ_buf+2, "instead of", time_value_buf+2).string);
+        return -1;
+    }
     return 0;
 }
 int set_time_F(int time)
 {
     if(time / 1000000) return -1;
     int ret;
-    char time_buf[9];
-    sprintf(time_buf, "F %06d", time);
-    ret = call_async(&set_time_F_cnd, 1, create_sstring(2, time, time_buf));
-    if(!ret || strcmp(time_buf+2, (char*)set_time_F_scanned_param)) return -1;
+    char time_value_buf[10], answ_buf[10];
+    sprintf(time_value_buf, "F %06d", time);
+    ret = call_async(&set_time_F_cnd, 1, create_sstring(2, time_buf, time_value_buf));
+        if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
+    sprintf(answ_buf, "F %06d", set_time_F_scanned_param);
+    if(strcmp(time_value_buf, answ_buf)) {
+        if(error_hndlr) error_hndlr(create_sstring(4, "*CRITICAL* somehow set wrong time: ", answ_buf+2, "instead of", time_value_buf+2).string);
+        return -1;
+    }
     return 0;
 }
 int set_time_G(int time)
 {
     if(time / 1000000) return -1;
     int ret;
-    char time_buf[9];
-    sprintf(time_buf, "G %06d", time);
-    ret = call_async(&set_time_G_cnd, 1, create_sstring(2, time, time_buf));
-    if(!ret || strcmp(time_buf+2, (char*)set_time_G_scanned_param)) return -1;
+    char time_value_buf[10], answ_buf[10];
+    sprintf(time_value_buf, "G %06d", time);
+    ret = call_async(&set_time_G_cnd, 1, create_sstring(2, time_buf, time_value_buf));
+        if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
+    sprintf(answ_buf, "G %06d", set_time_G_scanned_param);
+    if(strcmp(time_value_buf, answ_buf)) {
+        if(error_hndlr) error_hndlr(create_sstring(4, "*CRITICAL* somehow set wrong time: ", answ_buf+2, "instead of", time_value_buf+2).string);
+        return -1;
+    }
     return 0;
 }
 int set_time_H(int time)
 {
     if(time / 1000000) return -1;
     int ret;
-    char time_buf[9];
-    sprintf(time_buf, "H %06d", time);
-    ret = call_async(&set_time_H_cnd, 1, create_sstring(2, time, time_buf));
-    if(!ret || strcmp(time_buf+2, (char*)set_time_H_scanned_param)) return -1;
+    char time_value_buf[10], answ_buf[10];
+    sprintf(time_value_buf, "H %06d", time);
+    ret = call_async(&set_time_H_cnd, 1, create_sstring(2, time_buf, time_value_buf));
+        if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
+    sprintf(answ_buf, "H %06d", set_time_H_scanned_param);
+    if(strcmp(time_value_buf, answ_buf)) {
+        if(error_hndlr) error_hndlr(create_sstring(4, "*CRITICAL* somehow set wrong time: ", answ_buf+2, "instead of", time_value_buf+2).string);
+        return -1;
+    }
     return 0;
 }
 
@@ -422,34 +518,49 @@ int test_red()
 {
     int ret;
     ret = call_async(&test_red_cnd, 1, create_sstring(2, test, red_buf));
-    if(!ret) return -1;
+    if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
     return test_red_scanned_param;
 }
 int test_ylw()
 {
     int ret;
     ret = call_async(&test_ylw_cnd, 1, create_sstring(2, test, ylw));
-    if(!ret) return -1;
+    if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
     return test_ylw_scanned_param;
 }
 int test_grn()
 {
     int ret;
     ret = call_async(&test_grn_cnd, 1, create_sstring(2, test, grn));
-    if(!ret) return -1;
+    if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
     return test_grn_scanned_param;
 }
 int test_pred()
 {
     int ret;
     ret = call_async(&test_pred_cnd, 1, create_sstring(2, test, pred_buf));
-    if(!ret) return -1;
+    if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
     return test_pred_scanned_param;
 }
 int test_pgrn()
 {
     int ret;
     ret = call_async(&test_pgrn_cnd, 1, create_sstring(2, test, pgrn));
-    if(!ret) return -1;
+    if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
     return test_pgrn_scanned_param;
 }

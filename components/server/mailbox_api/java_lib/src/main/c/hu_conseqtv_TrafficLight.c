@@ -3,15 +3,6 @@
 
 #include "hu_conseqtv_TrafficLight.h"
 
-JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_initMailbox
-  (JNIEnv * env, jobject obj) {
-      return init_mailbox();
-  }
-
-JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_uninitMailbox
-  (JNIEnv * env, jobject obj) {
-      return uninit_mailbox();
-  }
 
 static JavaVM* vm = NULL;
 
@@ -29,10 +20,11 @@ static void handle_heartbeat()
     (*heartbeat_env)->CallVoidMethod(heartbeat_env, heartbeat_obj, heartbeat_mid);
 }
 
-JNIEXPORT void JNICALL Java_hu_conseqtv_TrafficLight_registerHeartbeatHhandler
+JNIEXPORT void JNICALL Java_hu_conseqtv_TrafficLight_registerHeartbeatHandler
   (JNIEnv * env, jobject _obj, jobject obj) {
+      if(heartbeat_initialized)(*env)->DeleteGlobalRef(env, heartbeat_obj);
       heartbeat_env = env;
-      heartbeat_obj = obj;
+      heartbeat_obj = (*env)->NewGlobalRef(env, obj);
       jclass cls = (*env)->GetObjectClass(env, obj);
       heartbeat_mid = (*env)->GetMethodID(env, cls, "handle", "()V");
       if(!vm)(*env)->GetJavaVM(env, &vm);
@@ -57,8 +49,9 @@ static void handle_err(char* buf)
 
 JNIEXPORT void JNICALL Java_hu_conseqtv_TrafficLight_registerErrorHandler
   (JNIEnv * env, jobject _obj, jobject obj) {
+      if(err_initialized)(*env)->DeleteGlobalRef(env, err_obj);
       err_env = env;
-      err_obj = obj;
+      err_obj = (*env)->NewGlobalRef(env, obj);
       jclass cls = (*env)->GetObjectClass(env, obj);
       err_mid = (*env)->GetMethodID(env, cls, "handle", "(Ljava/lang/String;)V");
       if(!vm)(*env)->GetJavaVM(env, &vm);
@@ -66,10 +59,23 @@ JNIEXPORT void JNICALL Java_hu_conseqtv_TrafficLight_registerErrorHandler
       register_error_handler(handle_err);
   }
 
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_initMailbox
+  (JNIEnv * env, jobject obj) {
+      return init_mailbox();
+  }
+
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_uninitMailbox
+  (JNIEnv * env, jobject obj) {
+      if(err_initialized)(*env)->DeleteGlobalRef(env, err_obj);
+      if(heartbeat_initialized)(*env)->DeleteGlobalRef(env, heartbeat_obj);
+      return uninit_mailbox();
+  }
+
+
 JNIEXPORT jstring JNICALL Java_hu_conseqtv_TrafficLight_getState
   (JNIEnv * env, jobject obj) {
       char buf[50];
-      return get_state(buf, 50) ? (*env)->NewStringUTF(env, buf) : (*env)->NewStringUTF(env, "ERR");
+      return !get_state(buf, 50) ? (*env)->NewStringUTF(env, buf) : (*env)->NewStringUTF(env, "ERR");
   }
 
 JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_setState

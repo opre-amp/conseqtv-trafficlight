@@ -14,14 +14,23 @@ public class Tester{
             testSendSignal();
             System.out.println("sendSignal works as expected.");
             testSetTimeA();
+            System.out.println("setTimeA works as expected.");
             testSetTimeB();
+            System.out.println("setTimeB works as expected.");
             testSetTimeC();
+            System.out.println("setTimeC works as expected.");
             testSetTimeC_();
+            System.out.println("setTimeC_ works as expected.");
             testSetTimeD();
+            System.out.println("setTimeD works as expected.");
             testSetTimeE();
+            System.out.println("setTimeE works as expected.");
             testSetTimeF();
+            System.out.println("setTimeF works as expected.");
             testSetTimeG();
+            System.out.println("setTimeG works as expected.");
             testSetTimeH();
+            System.out.println("setTimeH works as expected.");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -31,39 +40,39 @@ public class Tester{
     private static void testSetState() throws InterruptedException {
         for(String state : TrafficLight.getStates()) {
             trafficLight.setState(state);
-            Thread.sleep(10);
-            if(trafficLight.getState().equals(state)) {
-                System.out.println("Could not set state \"" + state + "\". Exiting.\n");
+            if(!trafficLight.getState().equals(state)) {
+                System.out.println("Could not set state \"" + state + "\". State is: \"" + trafficLight.getState()  + "\" Exiting.\n");
                 System.exit(-1);
             }
         }
     }
 
     private static void testSendSignal() throws InterruptedException {
+        String currentState;
         trafficLight.setState(TrafficLight.getStates().get(0));
         trafficLight.sendSignal(TrafficLight.getSignals().get(0));
-        Thread.sleep(10);
-        if(!trafficLight.getState().equals(TrafficLight.getStates().get(1))) {
-            System.out.println("Could not send signal \"" + TrafficLight.getSignals().get(0) + "\". Exiting.\n");
+
+        if(!(currentState = trafficLight.getState()).equals(TrafficLight.getStates().get(1))) {
+            System.out.println("Could not send signal \"" + TrafficLight.getSignals().get(0) + "\". Current state is \"" + currentState  +  "\". Exiting.\n");
             System.exit(-1);
         }
         trafficLight.sendSignal(TrafficLight.getSignals().get(2));
-        Thread.sleep(10);
-        if(!trafficLight.getState().equals(TrafficLight.getStates().get(2))) {
-            System.out.println("Could not send signal \"" + TrafficLight.getSignals().get(2) + "\". Exiting.\n");
+
+        if(!(currentState = trafficLight.getState()).equals(TrafficLight.getStates().get(2))) {
+            System.out.println("Could not send signal \"" + TrafficLight.getSignals().get(2) + "\". Current state is \"" + currentState  +  "\". Exiting.\n");
             System.exit(-1);
         }
         trafficLight.sendSignal(TrafficLight.getSignals().get(1));
-        Thread.sleep(10);
-        if(!trafficLight.getState().equals(TrafficLight.getStates().get(0))) {
-            System.out.println("Could not send signal \"" + TrafficLight.getSignals().get(1) + "\". Exiting.\n");
+
+        if(!(currentState = trafficLight.getState()).equals(TrafficLight.getStates().get(0))) {
+            System.out.println("Could not send signal \"" + TrafficLight.getSignals().get(1) + "\". Current state is \"" + currentState  +  "\". Exiting.\n");
             System.exit(-1);
         }
     }
 
-    private static final Integer[] timeTestData = {100, 1000, 3000, 5000, 10000};
+    private static final Integer[] timeTestData = {500, 1000, 3000, 5000, 10000};
 
-    private static void testSetTimeA(){
+    private static void testSetTimeA() throws InterruptedException {
         long start, stop;
         for(int i : timeTestData) {
             trafficLight.setTimeA(i);

@@ -84,12 +84,12 @@ void handle_incoming()
         else if (streq(buffer, time, param1_size)) {
             timeset[13] = buffer[param1_size + 1];
             int _time = atoi(buffer+param1_size+3);
-            timeset[19] = _time / 100000 % 10 + '0';
-            timeset[20] = _time / 10000  % 10 + '0';
-            timeset[21] = _time / 1000   % 10 + '0';
-            timeset[22] = _time / 100    % 10 + '0';
-            timeset[23] = _time / 10     % 10 + '0';
-            timeset[24] = _time / 1      % 10 + '0';
+            timeset[19] = ((_time / 100000) % 10) + '0';
+            timeset[20] = ((_time / 10000 ) % 10) + '0';
+            timeset[21] = ((_time / 1000  ) % 10) + '0';
+            timeset[22] = ((_time / 100   ) % 10) + '0';
+            timeset[23] = ((_time / 10    ) % 10) + '0';
+            timeset[24] = ((_time / 1     ) % 10) + '0';
             while(!send_data(timeset, sizeof(timeset)));
             switch(timeset[13]) {
                 case 'A': set_time_A(_time); break;
