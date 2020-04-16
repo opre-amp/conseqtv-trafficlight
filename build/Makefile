@@ -47,7 +47,7 @@ control:
 	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: armhf\nReplaces: raspberrypi-kernel\nDepends: openjdk-8-jre-headless\nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
 
 postinst:
-	printf "#!/bin/bash\nsudo cp /tmp/server.jar /home/*/\nsudo cp -r /tmp/boot/* /boot/\necho '@reboot root depmod -a && rm -f /etc/cron.d/conseqtv-server-depmod' > /etc/cron.d/conseqtv-server-depmod\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
+	printf "#!/bin/bash\nsudo cp /tmp/server.jar /home/*/\nsudo cp -r /tmp/boot/* /boot/\necho '@reboot root depmod -a && rm -f /etc/cron.d/conseqtv-server-depmod' | sudo tee /etc/cron.d/conseqtv-server-depmod\nsudo chmod +x /etc/cron.d/conseqtv-server-depmod\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
 	chmod 755 $@
 
 
