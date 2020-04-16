@@ -96,7 +96,7 @@ char test_red()
     off = read_gpio(tst_red);
     write_gpio(red_gpio, 0);
     on = read_gpio(tst_red);
-    return (!off && on);
+    return (off && on);
 }
 char test_yellow()
 {
@@ -106,7 +106,7 @@ char test_yellow()
     off = read_gpio(tst_ylw);
     write_gpio(ylw_gpio, 0);
     on = read_gpio(tst_ylw);
-    return (!off && on);
+    return (off && on);
 
 }
 char test_green()
@@ -117,7 +117,7 @@ char test_green()
     off = read_gpio(tst_grn);
     write_gpio(grn_gpio, 0);
     on = read_gpio(tst_grn);
-    return (!off && on);
+    return (off && on);
 
 }
 char test_pred()
@@ -128,7 +128,7 @@ char test_pred()
     off = read_gpio(tst_pred);
     write_gpio(pred_gpio, 0);
     on = read_gpio(tst_pred);
-    return (!off && on);
+    return (off && on);
 
 }
 char test_pgreen()
@@ -139,7 +139,7 @@ char test_pgreen()
     off = read_gpio(tst_pgrn);
     write_gpio(pgrn_gpio, 0);
     on = read_gpio(tst_pgrn);
-    return (!off && on);
+    return (off && on);
 }
 
 
