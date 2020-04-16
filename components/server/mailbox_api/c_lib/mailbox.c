@@ -352,7 +352,10 @@ int send_signal(char* buf)
 
 int set_time_A(int time)
 {
-    if(time / 1000000) return -1;
+    if(time / 1000000) {
+        if(error_hndlr) error_hndlr("Time too high! Maximum value: 999 999ms.");
+        return -1;
+    }
     int ret;
     char time_value_buf[10], answ_buf[10];
     sprintf(time_value_buf, "A %06d", time);
@@ -371,7 +374,10 @@ int set_time_A(int time)
 }
 int set_time_B(int time)
 {
-    if(time / 1000000) return -1;
+    if(time / 1000000) {
+        if(error_hndlr) error_hndlr("Time too high! Maximum value: 999 999ms.");
+        return -1;
+    }
     int ret;
     char time_value_buf[10], answ_buf[10];
     sprintf(time_value_buf, "B %06d", time);
@@ -389,7 +395,10 @@ int set_time_B(int time)
 }
 int set_time_C(int time)
 {
-    if(time / 1000000) return -1;
+    if(time / 1000000) {
+        if(error_hndlr) error_hndlr("Time too high! Maximum value: 999 999ms.");
+        return -1;
+    }
     int ret;
     char time_value_buf[10], answ_buf[10];
     sprintf(time_value_buf, "C %06d", time);
@@ -407,7 +416,10 @@ int set_time_C(int time)
 }
 int set_time_C_(int time)
 {
-    if(time / 1000000) return -1;
+    if(time / 1000000) {
+        if(error_hndlr) error_hndlr("Time too high! Maximum value: 999 999ms.");
+        return -1;
+    }
     int ret;
     char time_value_buf[10], answ_buf[10];
     sprintf(time_value_buf, "c %06d", time);
@@ -425,7 +437,10 @@ int set_time_C_(int time)
 }
 int set_time_D(int time)
 {
-    if(time / 1000000) return -1;
+    if(time / 1000000) {
+        if(error_hndlr) error_hndlr("Time too high! Maximum value: 999 999ms.");
+        return -1;
+    }
     int ret;
     char time_value_buf[10], answ_buf[10];
     sprintf(time_value_buf, "D %06d", time);
@@ -443,7 +458,10 @@ int set_time_D(int time)
 }
 int set_time_E(int time)
 {
-    if(time / 1000000) return -1;
+    if(time / 1000000) {
+        if(error_hndlr) error_hndlr("Time too high! Maximum value: 999 999ms.");
+        return -1;
+    }
     int ret;
     char time_value_buf[10], answ_buf[10];
     sprintf(time_value_buf, "E %06d", time);
@@ -461,7 +479,10 @@ int set_time_E(int time)
 }
 int set_time_F(int time)
 {
-    if(time / 1000000) return -1;
+    if(time / 1000000) {
+        if(error_hndlr) error_hndlr("Time too high! Maximum value: 999 999ms.");
+        return -1;
+    }
     int ret;
     char time_value_buf[10], answ_buf[10];
     sprintf(time_value_buf, "F %06d", time);
@@ -479,7 +500,10 @@ int set_time_F(int time)
 }
 int set_time_G(int time)
 {
-    if(time / 1000000) return -1;
+    if(time / 1000000) {
+        if(error_hndlr) error_hndlr("Time too high! Maximum value: 999 999ms.");
+        return -1;
+    }
     int ret;
     char time_value_buf[10], answ_buf[10];
     sprintf(time_value_buf, "G %06d", time);
@@ -497,7 +521,10 @@ int set_time_G(int time)
 }
 int set_time_H(int time)
 {
-    if(time / 1000000) return -1;
+    if(time / 1000000) {
+        if(error_hndlr) error_hndlr("Time too high! Maximum value: 999 999ms.");
+        return -1;
+    }
     int ret;
     char time_value_buf[10], answ_buf[10];
     sprintf(time_value_buf, "H %06d", time);
