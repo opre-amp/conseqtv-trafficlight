@@ -5,7 +5,7 @@ export
 
 DEB_NAME = conseqtv-server
 
-ARTIFACTS = controller.img loader mailbox.ko zImage modules.tar.gz dtbs.tar.gz u-boot.bin boot.scr config.txt libmailbox.so libmailbox_javacompat.so server.jar
+ARTIFACTS = controller.img loader mailbox.ko zImage modules.tar.gz dtbs.tar.gz u-boot.bin boot.scr config.txt libmailbox.so libmailbox_javacompat.so server.jar  control postinst conseqtv-server.service send_data
 
 PI := bcm2710-rpi-3-b-plus
 
@@ -17,7 +17,7 @@ UBOOT_REPO := git://git.denx.de/u-boot.git
 UBOOT_CONFIG := rpi_2_defconfig
 
 
-$(DEB_NAME).deb: $(ARTIFACTS) control postinst
+$(DEB_NAME).deb: $(ARTIFACTS)
 	mkdir -p $(DEB_NAME)
 	mkdir -p $(DEB_NAME)/DEBIAN
 	cp control $(DEB_NAME)/DEBIAN/
@@ -26,6 +26,7 @@ $(DEB_NAME).deb: $(ARTIFACTS) control postinst
 	cp controller.img $(DEB_NAME)/usr/share/$(DEB_NAME)/
 	mkdir -p $(DEB_NAME)/usr/bin
 	cp loader $(DEB_NAME)/usr/bin/loader
+	cp send_data $(DEB_NAME)/usr/bin/send_data
 	cd $(DEB_NAME) && tar xzf ../modules.tar.gz
 	mkdir -p $(DEB_NAME)/lib/modules/$$(basename $(DEB_NAME)/lib/modules/*)/kernel/extra/ 
 	cp mailbox.ko $(DEB_NAME)/lib/modules/*/kernel/extra/
@@ -39,6 +40,8 @@ $(DEB_NAME).deb: $(ARTIFACTS) control postinst
 	cp libmailbox.so $(DEB_NAME)/usr/lib/
 	cp libmailbox_javacompat.so $(DEB_NAME)/usr/lib/
 	cp server.jar $(DEB_NAME)/tmp/
+	mkdir -p $(DEB_NAME)/etc/systemd/system
+	cp conseqtv-server.service $(DEB_NAME)/etc/systemd/system/
 	dpkg-deb --build $(DEB_NAME)
 
 
@@ -47,8 +50,12 @@ control:
 	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: armhf\nReplaces: raspberrypi-kernel\nDepends: openjdk-8-jre-headless\nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
 
 postinst:
-	printf "#!/bin/bash\nsudo cp /tmp/server.jar /home/*/\nsudo cp -r /tmp/boot/* /boot/\necho '@reboot root depmod -a && rm -f /etc/cron.d/conseqtv-server-depmod' | sudo tee /etc/cron.d/conseqtv-server-depmod\nsudo chmod +x /etc/cron.d/conseqtv-server-depmod\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
+	printf "#!/bin/bash\nsudo cp /tmp/server.jar /home/*/\nsudo cp -r /tmp/boot/* /boot/\nsudo systemctl enable conseqtv-server\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
 	chmod 755 $@
+
+conseqtv-server.service:
+	printf "[Unit]\nDescription=Starts the controller software on boot.\n\n[Service]\nType=simple\nExecStartPre=depmod -a\nExecStartPre=modprobe mailbox\nExecStartPre=loader /usr/share/conseqtv-server/controller.img\nExecStart=java -jar /home/pi/server.jar && while true; do sleep 1; done\nExecStop=send_data stop\nExecStopPost=rmmod mailbox\n\n[Install]\nWantedBy=multi-user.target" > $@
+
 
 
 controller.img: $(COMPONENTS_PATH)/controller/controller.img
@@ -159,6 +166,11 @@ $(COMPONENTS_PATH)/server/mailbox_api/java_lib/build/libs/mailbox_api-1.0-SNAPSH
 	cd $(COMPONENTS_PATH)/server/mailbox_api/java_lib && ./gradlew build
 
 
+send_data: $(COMPONENTS_PATH)/server/send_data/send_data
+	cp $< $@ 
+
+$(COMPONENTS_PATH)/server/send_data/send_data:
+	$(MAKE) -C $(COMPONENTS_PATH)/server/send_data
 
 clean:
 	-find . -type d,f -not -name 'Makefile' -exec rm -rf {} +

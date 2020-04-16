@@ -1,5 +1,6 @@
 #include "traffic_light.h"
 #include "mailbox_api.h"
+#include "user_software.h"
 #include "timer.h"
 #include "gpio.h"
 
@@ -8,8 +9,8 @@ static int ylw_gpio = 2;
 static int red_gpio = 3;
 static int pgrn_gpio = 14;
 static int pred_gpio = 15;
-static int stopped = 11;
-static int signal = 12;
+static int stopped_btn = 11;
+static int signal_btn = 12;
 static int tst_grn = 6;
 static int tst_ylw = 7;
 static int tst_red = 8;
@@ -90,6 +91,7 @@ void pgreen(char state)
 char test_red()
 {
     int off, on;
+    if(get_state() != OFF) return 0;
     write_gpio(red_gpio, 0);
     off = read_gpio(tst_red);
     write_gpio(red_gpio, 0);
@@ -99,6 +101,7 @@ char test_red()
 char test_yellow()
 {
     int off, on;
+    if(get_state() != OFF) return 0;
     write_gpio(ylw_gpio, 0);
     off = read_gpio(tst_ylw);
     write_gpio(ylw_gpio, 0);
@@ -109,6 +112,7 @@ char test_yellow()
 char test_green()
 {
     int off, on;
+    if(get_state() != OFF) return 0;
     write_gpio(grn_gpio, 0);
     off = read_gpio(tst_grn);
     write_gpio(grn_gpio, 0);
@@ -119,6 +123,7 @@ char test_green()
 char test_pred()
 {
     int off, on;
+    if(get_state() != OFF) return 0;
     write_gpio(pred_gpio, 0);
     off = read_gpio(tst_pred);
     write_gpio(pred_gpio, 0);
@@ -129,6 +134,7 @@ char test_pred()
 char test_pgreen()
 {
     int off, on;
+    if(get_state() != OFF) return 0;
     write_gpio(pgrn_gpio, 0);
     off = read_gpio(tst_pgrn);
     write_gpio(pgrn_gpio, 0);
@@ -139,10 +145,10 @@ char test_pgreen()
 
 int pedestrian_signal()
 {
-    return read_gpio(signal);
+    return read_gpio(signal_btn);
 }
 
 int stopped_car()
 {
-    return read_gpio(stopped);
+    return read_gpio(stopped_btn);
 }

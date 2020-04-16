@@ -31,6 +31,7 @@ public class Tester{
             System.out.println("setTimeG works as expected.");
             testSetTimeH();
             System.out.println("setTimeH works as expected.");
+            trafficLight.setState(TrafficLight.getStates().get(0));
             testLedRed();
             System.out.println("Red led works as expected.");
             testLedGreen();
