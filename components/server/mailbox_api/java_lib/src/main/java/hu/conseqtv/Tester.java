@@ -31,6 +31,16 @@ public class Tester{
             System.out.println("setTimeG works as expected.");
             testSetTimeH();
             System.out.println("setTimeH works as expected.");
+            testLedRed();
+            System.out.println("Red led works as expected.");
+            testLedGreen();
+            System.out.println("Green led works as expected.");
+            testLedYellow();
+            System.out.println("Yellow led works as expected.");
+            testLedPedRed();
+            System.out.println("Pedestrian red led works as expected.");
+            testLedPedGreen();
+            System.out.println("Pedestrian green led works as expected.");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -198,4 +208,35 @@ public class Tester{
             }
         }
     }
+    private static void testLedRed(){
+        if(0 == trafficLight.testRed()) {
+            System.out.println("Physical connection problem with the red led.");
+            System.exit(-1);
+        }
+    }
+    private static void testLedYellow(){
+        if(0 == trafficLight.testYlw()) {
+            System.out.println("Physical connection problem with the yellow led.");
+            System.exit(-1);
+        }
+    }
+    private static void testLedGreen(){
+        if(0 == trafficLight.testGrn()) {
+            System.out.println("Physical connection problem with the green led.");
+            System.exit(-1);
+        }
+    }
+    private static void testLedPedRed(){
+        if(0 == trafficLight.testPred()) {
+            System.out.println("Physical connection problem with the pedestrian red led.");
+            System.exit(-1);
+        }
+    }
+    private static void testLedPedGreen(){
+        if(0 == trafficLight.testPgrn()) {
+            System.out.println("Physical connection problem with the pedestrian green led.");
+            System.exit(-1);
+        }
+    }
+
 }

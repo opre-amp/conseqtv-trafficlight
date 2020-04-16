@@ -150,3 +150,12 @@ void sample_sensors()
     }
 
 }
+
+int get_signal()
+{
+    return is_signalled;
+}
+int get_stopped()
+{
+    return is_stopped;
+}

@@ -44,12 +44,21 @@ int set_time_E(int time);
 int set_time_F(int time);
 int set_time_G(int time);
 int set_time_H(int time);
-
+/*
+ * These functions test the various leds of the system. They return 1 if
+ * the LED is working as expected.
+ */
 int test_red();
 int test_ylw();
 int test_grn();
 int test_pred();
 int test_pgrn();
+
+/*
+ * Get the state of the buttons
+ */
+int get_signal();
+int get_stopped();
 
 
 

@@ -8,12 +8,16 @@ byte stop_flag = 0;
 void send_police() {send_signal(POLICE);}
 void switch_off() {send_signal(SWITCH_OFF);}
 void switch_on() {send_signal(SWITCH_ON);}
-
+/*
+ * This function is called once, on startup
+ */
 void setup()
 {
     send_heartbeat();
 }
-
+/*
+ * This function is called repeatedly.
+ */
 void loop()
 {
     sample_sensors();

@@ -14,7 +14,9 @@ static volatile byte** mailbox_tx_clr = (void*) MAILBOX_TX_CLR;
 static volatile byte** mailbox_rx_clr = (void*) MAILBOX_RX_CLR;
 
 static volatile byte *last = (void*)TX_BUFFER;
-
+/*
+ * Buffers data on the first available slot in the TX buffer.
+ */
 static volatile byte* buffer_data(const byte* buffer, byte length)
 {
     volatile byte *ptr;

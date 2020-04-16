@@ -19,9 +19,9 @@ void pred(char state);
 void pgreen(char state);
 
 /*
- * These functions test the various leds of the system
+ * These functions test the various leds of the system. They return 1 if
+ * the LED is working as expected.
  */
-
 char test_red();
 char test_yellow();
 char test_green();

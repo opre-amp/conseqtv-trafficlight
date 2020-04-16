@@ -72,4 +72,7 @@ public class TrafficLight {
     public native int testPred();
     public native int testPgrn();
 
+    public native int getStopped();
+    public native int getSignal();
+
 }

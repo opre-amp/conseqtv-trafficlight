@@ -59,6 +59,8 @@ static char send[]      = "send";
 static char test[]      = "test";
 static char recv[]      = "recv";
 static char time_buf[]  = "time";
+static char btnc[]      = "btnc";
+static char btnp[]      = "btnp";
 
 static char red_buf[]   = "car_red";
 static char grn[]       = "car_grn";
@@ -80,6 +82,8 @@ static char resultok[]  = "Test result: ok";
 static char resultnok[] = "Test result: not ok"; 
 static char error  []   = "Error executing:";
 static char heartbeat[]  = "heartbeat";
+static char btnc_res[]  = "Car sensor: %d";
+static char btnp_res[]  = "Ped sensor: %d";
 
 mtx_t ioctl_mtx;
 
@@ -100,6 +104,8 @@ cnd_t test_ylw_cnd;
 cnd_t test_grn_cnd;
 cnd_t test_pred_cnd;
 cnd_t test_pgrn_cnd;
+cnd_t get_signal_cnd;
+cnd_t get_stopped_cnd;
 
 volatile int setstate_scanned_param;
 volatile int getstate_scanned_param;
@@ -118,6 +124,8 @@ volatile int test_ylw_scanned_param;
 volatile int test_grn_scanned_param;
 volatile int test_pred_scanned_param;
 volatile int test_pgrn_scanned_param;
+volatile int get_signal_scanned_param;
+volatile int get_stopped_scanned_param;
 
 static int fd;
 static void(*error_hndlr)(char*) = NULL;
@@ -195,6 +203,12 @@ static int reader(void* param)
         }
         else if(!strcmp(buf, error)) {
             error_indicator = 1;
+        }
+        else if(sscanf(buf, btnc_res, &get_stopped_scanned_param) == 1) {
+            cnd_broadcast(&get_stopped_cnd);
+        }
+        else if(sscanf(buf, btnp_res, &get_signal_scanned_param) == 1) {
+            cnd_broadcast(&get_signal_cnd);
         }
         else if(sscanf(buf, recving, &setstate_scanned_param) == 1) {
             cnd_broadcast(&get_state_cnd);
@@ -590,4 +604,24 @@ int test_pgrn()
         return -1;
     }
     return test_pgrn_scanned_param;
+}
+int get_signal()
+{
+    int ret;
+    ret = call_async(&get_signal_cnd, 1, create_sstring(1, btnp));
+    if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
+    return get_signal_scanned_param;
+}
+int get_stopped()
+{
+    int ret;
+    ret = call_async(&get_stopped_cnd, 1, create_sstring(1, btnc));
+    if(!ret) {
+        if(error_hndlr) error_hndlr("Request timed out or interrupted!");
+        return -1;
+    }
+    return get_stopped_scanned_param;
 }

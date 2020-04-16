@@ -53,6 +53,9 @@ void set_state(state _state);
  */
 void send_signal(signal _signal);
 
+/*
+ * setters for the static variables [A,H].
+ */
 void set_time_A(int time);
 void set_time_B(int time);
 void set_time_C(int time);
@@ -63,9 +66,16 @@ void set_time_F(int time);
 void set_time_G(int time);
 void set_time_H(int time);
 
+/*
+ * Call this to update the state of the sensors.
+ */
 void sample_sensors();
 
-
+/*
+ * Get the state of the buttons
+ */
+int get_signal();
+int get_stopped();
 
 #ifdef __cplusplus
 }

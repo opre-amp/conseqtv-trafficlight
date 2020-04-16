@@ -10,6 +10,11 @@ static int pgrn_gpio = 14;
 static int pred_gpio = 15;
 static int stopped = 11;
 static int signal = 12;
+static int tst_grn = 6;
+static int tst_ylw = 7;
+static int tst_red = 8;
+static int tst_pgrn = 9;
+static int tst_pred = 10;
 
 
 
@@ -84,27 +89,51 @@ void pgreen(char state)
 
 char test_red()
 {
-    return 1;
+    int off, on;
+    write_gpio(red_gpio, 0);
+    off = read_gpio(tst_red);
+    write_gpio(red_gpio, 0);
+    on = read_gpio(tst_red);
+    return (!off && on);
 }
 char test_yellow()
 {
-    return 1;
+    int off, on;
+    write_gpio(ylw_gpio, 0);
+    off = read_gpio(tst_ylw);
+    write_gpio(ylw_gpio, 0);
+    on = read_gpio(tst_ylw);
+    return (!off && on);
 
 }
 char test_green()
 {
-    return 1;
+    int off, on;
+    write_gpio(grn_gpio, 0);
+    off = read_gpio(tst_grn);
+    write_gpio(grn_gpio, 0);
+    on = read_gpio(tst_grn);
+    return (!off && on);
 
 }
 char test_pred()
 {
-    return 1;
+    int off, on;
+    write_gpio(pred_gpio, 0);
+    off = read_gpio(tst_pred);
+    write_gpio(pred_gpio, 0);
+    on = read_gpio(tst_pred);
+    return (!off && on);
 
 }
 char test_pgreen()
 {
-    return 1;
-
+    int off, on;
+    write_gpio(pgrn_gpio, 0);
+    off = read_gpio(tst_pgrn);
+    write_gpio(pgrn_gpio, 0);
+    on = read_gpio(tst_pgrn);
+    return (!off && on);
 }
 
 

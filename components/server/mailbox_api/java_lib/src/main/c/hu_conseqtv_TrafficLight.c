@@ -157,3 +157,11 @@ JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_testPgrn
   (JNIEnv * env, jobject obj) {
       return test_pgrn();
   }
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_getStopped
+  (JNIEnv * env, jobject obj) {
+      return get_stopped();
+  }
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_getSignal
+  (JNIEnv * env, jobject obj) {
+    return get_signal();
+  }

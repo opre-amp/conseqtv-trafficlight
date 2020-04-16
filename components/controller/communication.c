@@ -4,7 +4,9 @@
 #include "user_software.h"
 #include "traffic_light.h"
 
-
+/*
+ * Returns whether two strings are equal on a finite path (len).
+ */
 static byte streq(char* str1, char* str2, byte len)
 {
     for(int i = 0; i < len; ++i) {
@@ -22,6 +24,8 @@ static char send[]      = "send";
 static char test[]      = "test";
 static char recv[]      = "recv";
 static char time[]      = "time";
+static char btnc[]      = "btnc";
+static char btnp[]      = "btnp";
 static byte param1_size = 4;
 
 static char red_buf[]   = "car_red";
@@ -44,27 +48,40 @@ static char testing[]   = "Testing ???????";
 static char resultok[]  = "Test result: ok"; 
 static char resultnok[] = "Test result: not ok"; 
 static char error  []   = "Error executing:";
+static char btnc_res[]  = "Car sensor: ?";
+static char btnp_res[]  = "Ped sensor: ?";
 
 extern byte stop_flag;
-
+/*
+ * Emulates memcpy but in a simple way.
+ */
 static void copy_to_buffer(char* buffer, char* src, byte len)
 {
     for (int i = 0; i < len; ++i) {
         buffer[i] = src[i];
     }
 }
-
+/*
+ * Is a character numeric?
+ */
 static byte is_numeric(char n) {
     if(n < '0' || n > '9') return 0;
     return 1;
 }
-
+/*
+ * Turns a string into an integer.
+ */
 static int atoi(char* buf) {
     int ret = 0;
     for(;is_numeric(*buf);++buf) ret = ret*10 + (*buf) - '0';
     return ret;
 }
-
+/*
+ * Handles incoming stimulus; this is the interface from the host's
+ * controller.
+ * When a valid incoming message is received, an acknowledgement msg is 
+ * sent back. When an invalid msg arrives, an error msg is raised.
+ */
 void handle_incoming()
 {
     byte length;
@@ -79,6 +96,16 @@ void handle_incoming()
             recving[18] = get_state()/10 + '0';
             recving[19] = get_state()%10 + '0';
             while(!send_data(recving, sizeof(recving)));
+            return;
+        }
+        else if (streq(buffer, btnc, param1_size)) {
+            btnc_res[12] = get_stopped() ? '1' : '0';
+            while(!send_data(btnc_res, sizeof(btnc_res)));
+            return;
+        }
+        else if (streq(buffer, btnp, param1_size)) {
+            btnp_res[12] = get_signal() ? '1' : '0';
+            while(!send_data(btnp_res, sizeof(btnp_res)));
             return;
         }
         else if (streq(buffer, time, param1_size)) {
@@ -177,7 +204,9 @@ void handle_incoming()
 }
 
 static char heartbeat[] = "heartbeat";
-
+/*
+ * Every 1 sec this sends a "heartbeat" message to the host.
+ */
 void send_heartbeat()
 {
     send_data(heartbeat, sizeof(heartbeat));
