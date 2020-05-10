@@ -181,4 +181,5 @@ deepclean: clean
 	-$(MAKE) -C $(COMPONENTS_PATH)/server/mailbox_driver/ LINUX=$(COMPONENTS_PATH)/server/linux clean
 	-$(MAKE) -C $(COMPONENTS_PATH)/server/mailbox_api/c_lib clean
 	-$(MAKE) -C $(COMPONENTS_PATH)/server/mailbox_api/java_lib/src/main/c clean
+	-$(MAKE) -C $(COMPONENTS_PATH)/server/send_data clean
 	-rm -rf $(COMPONENTS_PATH)/server/{linux,u-boot}
