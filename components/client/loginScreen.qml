@@ -9,8 +9,8 @@ Image {
     id: backgroundimg
     source: "qrc:/background/Images/NewYork_Lights2.png"
     anchors.fill: parent
-
     signal signalScreenChange(string screenPath)
+
 
     ColumnLayout{
 
@@ -42,7 +42,7 @@ Image {
             Rectangle{
                id: usrbg
                color: "white"
-               width: Math.max(backgroundimg.width / 6, 100)
+               Layout.preferredWidth: Math.max(backgroundimg.width / 6, 100)
                height: 25
 
                TextInput{
@@ -54,6 +54,7 @@ Image {
                    font.family: "Courier New"
                    font.pointSize: 12
                    clip: true
+                   KeyNavigation.tab: passw
                }
             }
 
@@ -68,7 +69,7 @@ Image {
             Rectangle{
                id: passbg
                color: "white"
-               width: Math.max(backgroundimg.width / 6, 100)
+               Layout.preferredWidth: Math.max(backgroundimg.width / 6, 100)
                height: 25
 
                TextInput{
@@ -110,12 +111,24 @@ Image {
                 }
 
                 id: loginbtn
-                width: passbg.width
+                Layout.preferredWidth: Math.max(main_rectangle.width / 6, 100)
                 font.family: "Courier New"
                 font.pointSize: 12
                 text: "Log in"
                 onClicked: getAccess()
 
+            }
+
+            Button{
+                function exit() {
+                    Qt.quit()
+                }
+                id: exitbtn
+                Layout.preferredWidth: Math.max(main_rectangle.width / 6, 100)
+                font.family: "Courier New"
+                font.pointSize: 12
+                text: "Exit"
+                onClicked: exit()
             }
 
         }

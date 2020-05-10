@@ -57,7 +57,8 @@ int main(int argc, char *argv[])
 
     QQuickView view;
     view.setSource(QUrl("qrc:/screenLoader.qml"));
-    view.show();
+    QObject::connect(view.engine(), SIGNAL(quit()), QCoreApplication::instance(), SLOT(quit()));
+    view.showFullScreen();
 
     return a.exec();
 
