@@ -14,7 +14,7 @@
 #include "messageTableModel.h"
 #include "settings.h"
 #include "user.h"
-#include "screenProperty.h"
+
 
 static void connectToDatabase()
 {
