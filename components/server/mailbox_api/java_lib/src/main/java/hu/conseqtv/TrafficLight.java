@@ -66,6 +66,16 @@ public class TrafficLight {
     public native int setTimeG(int time);
     public native int setTimeH(int time);
 
+    public native int getTimeA();
+    public native int getTimeB();
+    public native int getTimeC();
+    public native int getTimeC_();
+    public native int getTimeD();
+    public native int getTimeE();
+    public native int getTimeF();
+    public native int getTimeG();
+    public native int getTimeH();
+
     public native int testRed();
     public native int testYlw();
     public native int testGrn();

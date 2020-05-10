@@ -44,6 +44,16 @@ int set_time_E(int time);
 int set_time_F(int time);
 int set_time_G(int time);
 int set_time_H(int time);
+
+int get_time_A();
+int get_time_B();
+int get_time_C();
+int get_time_C_();
+int get_time_D();
+int get_time_E();
+int get_time_F();
+int get_time_G();
+int get_time_H();
 /*
  * These functions test the various leds of the system. They return 1 if
  * the LED is working as expected.

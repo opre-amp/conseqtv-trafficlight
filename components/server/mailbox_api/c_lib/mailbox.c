@@ -84,6 +84,8 @@ static char error  []   = "Error executing:";
 static char heartbeat[]  = "heartbeat";
 static char btnc_res[]  = "Car sensor: %d";
 static char btnp_res[]  = "Ped sensor: %d";
+static char time_res[]  = "Timing value for %c is %06d";
+
 
 mtx_t ioctl_mtx;
 
@@ -106,6 +108,15 @@ cnd_t test_pred_cnd;
 cnd_t test_pgrn_cnd;
 cnd_t get_signal_cnd;
 cnd_t get_stopped_cnd;
+cnd_t get_time_A_cnd;
+cnd_t get_time_B_cnd;
+cnd_t get_time_C_cnd;
+cnd_t get_time_C__cnd;
+cnd_t get_time_D_cnd;
+cnd_t get_time_E_cnd;
+cnd_t get_time_F_cnd;
+cnd_t get_time_G_cnd;
+cnd_t get_time_H_cnd;
 
 volatile int setstate_scanned_param;
 volatile int getstate_scanned_param;
@@ -126,6 +137,15 @@ volatile int test_pred_scanned_param;
 volatile int test_pgrn_scanned_param;
 volatile int get_signal_scanned_param;
 volatile int get_stopped_scanned_param;
+volatile int get_time_A_scanned_param;
+volatile int get_time_B_scanned_param;
+volatile int get_time_C_scanned_param;
+volatile int get_time_C__scanned_param;
+volatile int get_time_D_scanned_param;
+volatile int get_time_E_scanned_param;
+volatile int get_time_F_scanned_param;
+volatile int get_time_G_scanned_param;
+volatile int get_time_H_scanned_param;
 
 static int fd;
 static void(*error_hndlr)(char*) = NULL;
@@ -144,6 +164,32 @@ int init_mailbox()
     mtx_init(&ioctl_mtx, mtx_plain);
     cnd_init(&get_state_cnd);
     cnd_init(&set_state_cnd);
+    cnd_init(&send_signal_cnd);
+    cnd_init(&set_time_A_cnd);
+    cnd_init(&set_time_B_cnd);
+    cnd_init(&set_time_C_cnd);
+    cnd_init(&set_time_C__cnd);
+    cnd_init(&set_time_D_cnd);
+    cnd_init(&set_time_E_cnd);
+    cnd_init(&set_time_F_cnd);
+    cnd_init(&set_time_G_cnd);
+    cnd_init(&set_time_H_cnd);
+    cnd_init(&test_red_cnd);
+    cnd_init(&test_ylw_cnd);
+    cnd_init(&test_grn_cnd);
+    cnd_init(&test_pred_cnd);
+    cnd_init(&test_pgrn_cnd);
+    cnd_init(&get_signal_cnd);
+    cnd_init(&get_stopped_cnd);
+    cnd_init(&get_time_A_cnd);
+    cnd_init(&get_time_B_cnd);
+    cnd_init(&get_time_C_cnd);
+    cnd_init(&get_time_C__cnd);
+    cnd_init(&get_time_D_cnd);
+    cnd_init(&get_time_E_cnd);
+    cnd_init(&get_time_F_cnd);
+    cnd_init(&get_time_G_cnd);
+    cnd_init(&get_time_H_cnd);
     fd = open("/dev/mbox", O_RDWR);
     if(fd < 0) {
         if(error_hndlr) error_hndlr("Could not open /dev/mbox!");
@@ -230,6 +276,20 @@ static int reader(void* param)
                 case 'F': set_time_F_scanned_param = time_value; cnd_broadcast(&set_time_F_cnd); break;
                 case 'G': set_time_G_scanned_param = time_value; cnd_broadcast(&set_time_G_cnd); break;
                 case 'H': set_time_H_scanned_param = time_value; cnd_broadcast(&set_time_H_cnd); break;
+                default: break;
+            }
+        }
+        else if(sscanf(buf, time_res, &time_c, &time_value) == 2) {
+            switch(time_c) {
+                case 'A': get_time_A_scanned_param = time_value; cnd_broadcast(&get_time_A_cnd); break;
+                case 'B': get_time_B_scanned_param = time_value; cnd_broadcast(&get_time_B_cnd); break;
+                case 'C': get_time_C_scanned_param = time_value; cnd_broadcast(&get_time_C_cnd); break;
+                case 'c': get_time_C__scanned_param = time_value; cnd_broadcast(&get_time_C__cnd); break;
+                case 'D': get_time_D_scanned_param = time_value; cnd_broadcast(&get_time_D_cnd); break;
+                case 'E': get_time_E_scanned_param = time_value; cnd_broadcast(&get_time_E_cnd); break;
+                case 'F': get_time_F_scanned_param = time_value; cnd_broadcast(&get_time_F_cnd); break;
+                case 'G': get_time_G_scanned_param = time_value; cnd_broadcast(&get_time_G_cnd); break;
+                case 'H': get_time_H_scanned_param = time_value; cnd_broadcast(&get_time_H_cnd); break;
                 default: break;
             }
         }
@@ -553,6 +613,13 @@ int set_time_H(int time)
         return -1;
     }
     return 0;
+}
+
+int get_time_A()
+{
+    int ret;
+    ret = call_async(&get_time_A_cnd, 1, create_sstring(3, time_buf, "A", "?"));
+
 }
 
 int test_red()

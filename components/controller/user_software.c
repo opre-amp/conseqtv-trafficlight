@@ -135,6 +135,16 @@ void set_time_F(int time) { time_F = time; }
 void set_time_G(int time) { time_G = time; }
 void set_time_H(int time) { time_H = time; }
 
+int get_time_A() { return time_A; }
+int get_time_B() { return time_B; }
+int get_time_C() { return time_C; }
+int get_time_C_() { return time_C_; }
+int get_time_D() { return time_D; }
+int get_time_E() { return time_E; }
+int get_time_F() { return time_F; }
+int get_time_G() { return time_G; }
+int get_time_H() { return time_H; }
+
 char signal_buf[] = "Pedestrian signal received!";
 char stopped_buf[]= "Car stopped signal received!";
 

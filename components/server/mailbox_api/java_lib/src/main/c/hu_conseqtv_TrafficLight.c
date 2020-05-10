@@ -136,6 +136,46 @@ JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_setTimeH
       return set_time_H(time);
   }
 
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_getTimeA
+  (JNIEnv * env, jobject _obj) {
+      return get_time_A();
+  }
+
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_getTimeB
+  (JNIEnv * env, jobject _obj) {
+      return get_time_B();
+  }
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_getTimeC
+  (JNIEnv * env, jobject _obj) {
+      return get_time_C();
+  }
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_getTimeC_1
+  (JNIEnv * env, jobject _obj) {
+      return get_time_C_();
+  }
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_getTimeD
+  (JNIEnv * env, jobject _obj) {
+      return get_time_D();
+  }
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_getTimeE
+  (JNIEnv * env, jobject _obj) {
+      return get_time_E();
+  }
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_getTimeF
+  (JNIEnv * env, jobject _obj) {
+      return get_time_F();
+  }
+
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_getTimeG
+  (JNIEnv * env, jobject _obj) {
+      return get_time_G();
+  }
+
+JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_getTimeH
+  (JNIEnv * env, jobject _obj) {
+      return get_time_H();
+  }
+
 JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_testRed
   (JNIEnv * env, jobject obj) {
       return test_red();

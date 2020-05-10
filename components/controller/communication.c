@@ -50,6 +50,7 @@ static char resultnok[] = "Test result: not ok";
 static char error  []   = "Error executing:";
 static char btnc_res[]  = "Car sensor: ?";
 static char btnp_res[]  = "Ped sensor: ?";
+static char time_res[]  = "Timing value for ? is ??????";
 
 extern byte stop_flag;
 /*
@@ -110,24 +111,49 @@ void handle_incoming()
         }
         else if (streq(buffer, time, param1_size)) {
             timeset[13] = buffer[param1_size + 1];
-            int _time = atoi(buffer+param1_size+3);
-            timeset[19] = ((_time / 100000) % 10) + '0';
-            timeset[20] = ((_time / 10000 ) % 10) + '0';
-            timeset[21] = ((_time / 1000  ) % 10) + '0';
-            timeset[22] = ((_time / 100   ) % 10) + '0';
-            timeset[23] = ((_time / 10    ) % 10) + '0';
-            timeset[24] = ((_time / 1     ) % 10) + '0';
-            while(!send_data(timeset, sizeof(timeset)));
-            switch(timeset[13]) {
-                case 'A': set_time_A(_time); break;
-                case 'B': set_time_B(_time); break;
-                case 'C': set_time_C(_time); break;
-                case 'c': set_time_C_(_time); break;
-                case 'D': set_time_D(_time); break;
-                case 'E': set_time_E(_time); break;
-                case 'F': set_time_F(_time); break;
-                case 'G': set_time_G(_time); break;
-                case 'H': set_time_H(_time); break;
+            if(is_numeric(*(buffer+param1_size+3)))
+            {
+                int _time = atoi(buffer+param1_size+3);
+                timeset[19] = ((_time / 100000) % 10) + '0';
+                timeset[20] = ((_time / 10000 ) % 10) + '0';
+                timeset[21] = ((_time / 1000  ) % 10) + '0';
+                timeset[22] = ((_time / 100   ) % 10) + '0';
+                timeset[23] = ((_time / 10    ) % 10) + '0';
+                timeset[24] = ((_time / 1     ) % 10) + '0';
+                while(!send_data(timeset, sizeof(timeset)));
+                switch(timeset[13]) {
+                    case 'A': set_time_A(_time); break;
+                    case 'B': set_time_B(_time); break;
+                    case 'C': set_time_C(_time); break;
+                    case 'c': set_time_C_(_time); break;
+                    case 'D': set_time_D(_time); break;
+                    case 'E': set_time_E(_time); break;
+                    case 'F': set_time_F(_time); break;
+                    case 'G': set_time_G(_time); break;
+                    case 'H': set_time_H(_time); break;
+                }
+            } 
+            else if(*(buffer+param1_size+3) == '?')
+            {
+                int timing;
+                switch(time_res[17] = *(buffer+param1_size+3)) {
+                    case 'A': timing = get_time_A(); break;
+                    case 'B': timing = get_time_B(); break;
+                    case 'C': timing = get_time_C(); break;
+                    case 'c': timing = get_time_C_(); break;
+                    case 'D': timing = get_time_D(); break;
+                    case 'E': timing = get_time_E(); break;
+                    case 'F': timing = get_time_F(); break;
+                    case 'G': timing = get_time_G(); break;
+                    case 'H': timing = get_time_H(); break;
+                }
+                time_res[22] = ((timing / 100000) % 10) + '0';
+                time_res[23] = ((timing / 10000 ) % 10) + '0';
+                time_res[24] = ((timing / 1000  ) % 10) + '0';
+                time_res[25] = ((timing / 100   ) % 10) + '0';
+                time_res[26] = ((timing / 10    ) % 10) + '0';
+                time_res[27] = ((timing / 1     ) % 10) + '0';
+                while(!send_data(time_res, sizeof(time_res)));
             }
             return;
         }

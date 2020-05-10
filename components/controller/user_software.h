@@ -67,6 +67,19 @@ void set_time_G(int time);
 void set_time_H(int time);
 
 /*
+ * getters for the static variables [A,H].
+ */
+int get_time_A();
+int get_time_B();
+int get_time_C();
+int get_time_C_();
+int get_time_D();
+int get_time_E();
+int get_time_F();
+int get_time_G();
+int get_time_H();
+
+/*
  * Call this to update the state of the sensors.
  */
 void sample_sensors();
