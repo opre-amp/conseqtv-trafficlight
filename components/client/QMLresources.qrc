@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>loginScreen.qml</file>
+        <file>controlScreen.qml</file>
+        <file>mainScreen.qml</file>
+        <file>statScreen.qml</file>
+        <file>homeScreen.qml</file>
+        <file>stateMachine.qml</file>
+        <file>screenLoader.qml</file>
+    </qresource>
+</RCC>

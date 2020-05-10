@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/background">
+        <file>Images/NewYork_Lights2.png</file>
+        <file>Images/icon.png</file>
+        <file>Images/realistic.jpg</file>
+        <file>Images/state1.png</file>
+        <file>Images/state2.png</file>
+        <file>Images/state3.png</file>
+        <file>Images/state4.png</file>
+        <file>Images/state5.png</file>
+        <file>Images/state6.png</file>
+        <file>Images/state7.png</file>
+        <file>Images/state8.png</file>
+        <file>Images/stopped.png</file>
+        <file>Images/Working.PNG</file>
+    </qresource>
+    <qresource prefix="/"/>
+</RCC>
