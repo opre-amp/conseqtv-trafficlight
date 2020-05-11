@@ -14,5 +14,18 @@
         <file>Images/stopped.png</file>
         <file>Images/Working.PNG</file>
     </qresource>
+    <qresource prefix="/fsm">
+        <file>Images/0.png</file>
+        <file>Images/1.png</file>
+        <file>Images/2.png</file>
+        <file>Images/3.png</file>
+        <file>Images/4.png</file>
+        <file>Images/5.png</file>
+        <file>Images/6.png</file>
+        <file>Images/7.png</file>
+        <file>Images/8.png</file>
+        <file>Images/9.png</file>
+        <file>Images/10.png</file>
+    </qresource>
     <qresource prefix="/"/>
 </RCC>

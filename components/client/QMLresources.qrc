@@ -7,5 +7,6 @@
         <file>homeScreen.qml</file>
         <file>stateMachine.qml</file>
         <file>screenLoader.qml</file>
+        <file>RESTclient.js</file>
     </qresource>
 </RCC>

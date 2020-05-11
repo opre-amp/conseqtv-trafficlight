@@ -1,111 +1,62 @@
 import QtQuick 2.14
 import QtQuick.Window 2.10
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQml.StateMachine 1.14 as DSM
 
-import delaysettings 1.0
+import userdata 1.0
 
 
 Image{
     id: display_img
-    source: 'qrc:/background/Images/Working.PNG'
+    source: 'qrc:/fsm/Images/0.png'
 
-    DelaySettings{id:getter}
+    property variant lut: ["Off",
+        "Blinking yellow",
+        "Yellow",
+        "Red & pedestrian red (1)",
+        "Red & pedestrian green",
+        "Red & pedestrian green & stop",
+        "Red & blinking pedestrian green",
+        "Red & pedestrian red (2)",
+        "Red-yellow",
+        "Green",
+        "Green & signal"]
 
-DSM.StateMachine {
-    id: stateMachine
-    initialState: working
-    running: true
 
-        DSM.State {
-            id: working
-            initialState: yellow_p_red
+    function getX(index) {
+        return [0.5353901996, 0.6851179673, 0.7304900181, 0.8484573503, 0.7304900181, 0.6851179673, 0.5353901996, 0.5308529946, 0.4355716878][index]
+    }
 
+    function getY(index) {
+        return [0.2447552448, 0.2447552448, 0.3671328671, 0.3671328671, 0.5769230769, 0.7226107226, 0.7226107226, 0.5769230769, 0.3671328671][index]
+    }
 
+    function showState(state) {
+        display_img.source = 'qrc:/fsm/Images/' + lut.indexOf(state) + '.png'
+    }
 
-            DSM.State {
-                id: yellow_p_red
-                onEntered: display_img.source = 'qrc:/background/Images/state1.png'
+    Repeater{
+        id: spinboxes
+        model: 9
 
-                DSM.TimeoutTransition {
-                    id: time_A
-                    targetState: red_p_red
-                }
-            }
-            DSM.State {
-                id: red_p_red
-                onEntered: display_img.source = 'qrc:/background/Images/state2.png'
-                DSM.TimeoutTransition {
-                    id: time_B
-                    targetState: red_p_green
-                }
-            }
-            DSM.State {
-                id: red_p_green
-                onEntered: display_img.source = 'qrc:/background/Images/state3.png'
-                DSM.SignalTransition {
-                    targetState: red_p_green_stopped
-                }
-                DSM.TimeoutTransition {
-                    id: time_C
-                    targetState: red_p_blink_green
-                }
-            }
-            DSM.State {
-                id: red_p_green_stopped
-                onEntered: display_img.source = 'qrc:/background/Images/stopped.png'
-                DSM.TimeoutTransition {
-                    id: time_C_delta
-                    targetState: red_p_blink_green
-                }
-            }
-            DSM.State {
-                id: red_p_blink_green
-                onEntered: display_img.source = 'qrc:/background/Images/state4.png'
-                DSM.TimeoutTransition {
-                    id: time_D
-                    targetState: red_p_red_after_blink
-                }
-            }
-            DSM.State {
-                id: red_p_red_after_blink
-                onEntered: display_img.source = 'qrc:/background/Images/state5.png'
-                DSM.TimeoutTransition {
-                    id: time_E
-                    targetState: red_yellow_p_red
-                }
-            }
-            DSM.State {
-                id: red_yellow_p_red
-                onEntered: display_img.source = 'qrc:/background/Images/state6.png'
-
-                DSM.TimeoutTransition {
-                    id: time_F
-                    targetState: green_p_red
-                }
-            }
-            DSM.State {
-                id: green_p_red
-                onEntered: display_img.source = 'qrc:/background/Images/state7.png'
-                DSM.TimeoutTransition {
-                    id: time_G
-                    targetState: green_p_red_before_yellow
-                }
-                DSM.SignalTransition {
-                    targetState: green_p_red_before_yellow
-                }
-            }
-            DSM.State {
-                id: green_p_red_before_yellow
-                onEntered: display_img.source = 'qrc:/background/Images/state8.png'
-                DSM.TimeoutTransition {
-                    id: time_H
-                    targetState: yellow_p_red
-                }
-            }
+        SpinBox {
+               from: 10
+               value: 1000
+               to: 10000
+               stepSize: 10
+               width: 60
+               height: 30
+               x: display_img.width*getX(index)
+               y: display_img.height*getY(index)
+               onValueChanged: showState("Green")
         }
     }
+
 }
 
-
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/

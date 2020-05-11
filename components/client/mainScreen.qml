@@ -126,7 +126,7 @@ Item {
         id: col_1
         anchors.left: mainScreenItem.left
         Rectangle {
-            width: mainScreenItem.width/5
+            width: mainScreenItem.width/10
             height: mainScreenItem.height
             color: "black"
         }
@@ -136,7 +136,7 @@ Item {
         anchors.left: col_1.right
         anchors.top: header.bottom
         height: mainScreenItem.height
-        width: (mainScreenItem.width/5)*3
+        width: (mainScreenItem.width/5)*4
 
         Tab {
             id: hometab
@@ -150,7 +150,7 @@ Item {
         }
         Tab {
             id: stattab
-            title: "Statistics"
+            title: "Logs"
             source: 'qrc:/statScreen.qml'
         }
 
@@ -170,7 +170,7 @@ Item {
                 implicitHeight: 50
                 radius: 0
                 Text {
-                    id: text
+                    id: textid
                     anchors.centerIn: parent
                     text: styleData.title !== "Log out" ? styleData.title : ""
                     color: styleData.selected ? "black" : "white"
@@ -202,9 +202,15 @@ Item {
         anchors.left: tabview.right
         anchors.right: mainScreenItem.right
         Rectangle {
-            width: mainScreenItem.width/5
+            width: mainScreenItem.width/10
             height: mainScreenItem.height
             color: "black"
         }
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/

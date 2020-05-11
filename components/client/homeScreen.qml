@@ -6,88 +6,63 @@ import QtQuick.Controls.Styles 1.4
 
 import tablemodel 1.0
 
+import 'RESTclient.js' as RESTClient
+
 Flickable {
-        id: fparent
-        anchors.fill: parent
-        anchors.bottomMargin: 20
-        anchors.margins: 10
+    id: fparent
+    anchors.fill: parent
+    anchors.bottomMargin: 20
+    anchors.margins: 10
 
 
-        interactive: true
-        clip: true
-        flickableDirection: Flickable.VerticalFlick
-        contentHeight: messagesList.height *1.5
+    interactive: true
+    clip: true
+    flickableDirection: Flickable.VerticalFlick
+    contentHeight: messagesList.height + user_mgmt.height + r_layout.height
 
+    RowLayout {
+        id: user_mgmt
+        anchors.margins: 20
+        enabled: RESTClient.is_admin()
 
-        ListView {
-            id: messagesList
-            anchors.top: r_layout.bottom
-            width: parent.width
-            height: childrenRect.height
-            clip: true
-            model: MessageTableModel {
-                   }
-       delegate:
-       Column{
-           Row {
-               RowLayout{
-               id: messageRow
-               Label {
-                   id: timestampText
-                   text: Qt.formatDateTime(model.timestamp, "d MMM hh:mm")
-                   font.family: "Courier New"
-                   font.pointSize: 12
-                   color: "black"
-               }
-               Label {
-                   id: authorText
-                   text: model.author
-                   font.family: "Courier New"
-                   font.pointSize: 12
-                   color: "black"
-               }
-
-               Label {
-                   id: groupText
-                   text: model.group
-                   font.family: "Courier New"
-                   font.pointSize: 12
-                   color: "black"
-               }
-               }
-           }
-            Row{
-               Rectangle {
-                   width: messageText.implicitWidth + 20
-                   height: messageText.implicitHeight + 20
-                   Text{
-                           id: messageText
-                           width: fparent.width
-                           text: model.message
-                           font.family: "Courier New"
-                           font.pointSize: 12
-                           clip: true
-                           wrapMode: Text.Wrap
-                       }
-                   }
-               }
-
-       }
-            interactive: true
-            onCountChanged: {
-               messagesList.positionViewAtEnd()
+            Text {
+                id: element
+                text: qsTr("User management: ")
+                font.pixelSize: 12
             }
-        }
-        RowLayout {
-            id: r_layout
-            width: parent.width
-            Rectangle{
-                id: base
-                Layout.fillWidth: true
-                height: messageField.height
-                color: "lavender"
 
-            TextArea {
+            Button {
+                id: newuser
+                text: qsTr("Add User")
+            }
+
+            Button {
+                id: modifyuser
+                text: qsTr("Modify User")
+            }
+
+            Button {
+                id: deleteuser
+                text: qsTr("Delete User")
+            }
+
+
+
+    }
+
+    RowLayout {
+        id: r_layout
+        x: 0
+        width: parent.width
+        anchors.topMargin: 8
+        anchors.top: user_mgmt.bottom
+        Rectangle{
+            id: base
+            Layout.fillWidth: true
+            height: messageField.height
+            color: "lavender"
+
+            TextField {
                 id: messageField
                 width: base.width
                 Layout.fillHeight: true
@@ -96,24 +71,104 @@ Flickable {
                 font.pointSize: 12
                 wrapMode: TextArea.Wrap
                 placeholderText: qsTr("Compose message")
+                Keys.onEnterPressed: sendButton.send()
+                Keys.onReturnPressed: sendButton.send()
+                Component.onCompleted: messageField.forceActiveFocus()
             }
-            }
-            ComboBox {
-                id: group
-                model: [ "All", "Maintenance", "Ploice", "Research" ]
-            }
-            Button {
-                id: sendButton
-                font.family: "Courier New"
+        }
+        ComboBox {
+            id: group
+            model: [ "User", "Police", "Admin" ]
+        }
+        Button {
+            id: sendButton
+            font.family: "Courier New"
 
-                text: qsTr("Send")
-                enabled: messageField.length > 0
-                onClicked: {
-                    messagesList.model.sendMessage("Me",group.currentText, messageField.text);
-                    messageField.text = "";
+            text: qsTr("Send")
+            enabled: messageField.length > 0
+            function send() {
+                messagesList.model.sendMessage("Me",group.currentText, messageField.text);
+                messageField.text = "";
+            }
+
+            onClicked: send()
+        }
+    }
+
+
+    ListView {
+        id: messagesList
+        anchors.top: r_layout.bottom
+        width: parent.width
+        height: childrenRect.height
+        clip: true
+        model: MessageTableModel {
+        }
+        delegate:
+            Column{
+            Row {
+                RowLayout{
+                    id: messageRow
+                    Label {
+                        id: timestampText
+                        text: Qt.formatDateTime(model.timestamp, "d MMM hh:mm")
+                        font.family: "Courier New"
+                        font.pointSize: 12
+                        font.italic: true
+                        color: "black"
+                    }
+                    Label {
+                        id: authorText
+                        text: model.author
+                        font.family: "Courier New"
+                        font.pointSize: 12
+                        color: "black"
+                    }
+
+                    Label {
+                        id: rarrowText
+                        text: "→"
+                        font.family: "Courier New"
+                        font.pointSize: 12
+                        color: "black"
+                    }
+                    Label {
+                        id: groupText
+                        text: model.group
+                        font.family: "Courier New"
+                        font.pointSize: 12
+                        color: "black"
+                    }
                 }
             }
-         }
+            Row{
+                Rectangle {
+                    width: fparent.width
+                    height: messageText.implicitHeight
+                    Text{
+                        id: messageText
+                        width: fparent.width
+                        text: model.message
+                        font.family: "Courier New"
+                        font.pointSize: 12
+                        clip: true
+                        wrapMode: Text.Wrap
+                    }
+                }
+            }
+
+        }
+        interactive: true
+        onCountChanged: {
+            messagesList.positionViewAtEnd()
+        }
+    }
 }
 
 
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/

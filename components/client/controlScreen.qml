@@ -7,132 +7,133 @@ import QtQml.StateMachine 1.14 as DSM
 import userdata 1.0
 import delaysettings 1.0
 
+import 'RESTclient.js' as RESTClient
+
 
 Flickable{
 
-DelaySettings{
-    id: setter
-}
-
-RowLayout{
-    id: main_layout
-//    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.fill: parent
+    anchors.bottomMargin: 20
+    anchors.margins: 10
 
 
-    Column{
-        id: pack_1
-        padding:10
-        Repeater{
-        id: repeat_1
-        model:5
-        Row{
-            Label{
-                text: ("time_"+(model.index+1)).toString()
-                font.family: "Courier New"
-                font.pointSize: 12
-                padding: 10
-                anchors.verticalCenter: parent.verticalCenter
+    RowLayout{
+        id: main_layout
+        anchors.margins: 20
 
+        Column{
+            id: cols
+            CheckBox {
+                id: test_red
+                text: qsTr("Red")
+                checked: true
             }
 
-            SpinBox {
-                   id: index_1
-                   from: 0
-                   value: 100
-                   to: 100 * 100
-                   stepSize: 10
-
-
-                   property int decimals: 2
-                   property real realValue: value / 100
-                   property string label: ("time_"+(model.index+1)).toString()
-
-                   validator: DoubleValidator {
-                       bottom: Math.min(index_1.from, index_1.to)
-                       top:  Math.max(index_1.from, index_1.to)
-                   }
-
-                   textFromValue: function(value, locale) {
-                       console.log(label +' '+ value)
-                       setter.setTime(label, value*10)
-                       return Number(value / 100).toLocaleString(locale, 'f', index_1.decimals)
-                   }
-
-                   valueFromText: function(text, locale) {
-                       return Number.fromLocaleString(locale, text) * 100
-                   }
-               }
+            CheckBox {
+                id: test_ylw
+                text: qsTr("Yellow")
+                checked: true
             }
-        }
-    }
 
-    Column{
-        id: pack_2
-        Repeater{
-        id: repeat_2
-        model:4
-        Row{
-            Label{
-                text: ("time_"+(model.index+6)).toString()
-                font.family: "Courier New"
-                font.pointSize: 12
-                padding: 10
-                anchors.verticalCenter: parent.verticalCenter
 
+            CheckBox {
+                id: test_grn
+                text: qsTr("Green")
+                checked: true
             }
-            SpinBox {
-                   id: index_2
-                   from: 0
-                   value: 100
-                   to: 100 * 100
-                   stepSize: 10
 
-
-                   property int decimals: 2
-                   property real realValue: value / 100
-                   property string label: ("time_"+(model.index+6)).toString()
-
-                   validator: DoubleValidator {
-                       bottom: Math.min(index_2.from, index_2.to)
-                       top:  Math.max(index_2.from, index_2.to)
-                   }
-
-                   textFromValue: function(value, locale) {
-                       console.log(label +' '+ value)
-                       setter.setTime(label, value*10)
-                       return Number(value / 100).toLocaleString(locale, 'f', index_2.decimals)
-                   }
-
-                   valueFromText: function(text, locale) {
-                       return Number.fromLocaleString(locale, text) * 100
-                   }
-               }
+            CheckBox {
+                id: test_pedred
+                text: qsTr("Pedestrian Red")
+                checked: true
             }
-        }
-    }
-    Column{
-        Button{
-           text:  "Start"
-           onClicked: function getter(){
 
-
-           }
+            CheckBox {
+                id: test_pedgrn
+                text: qsTr("Pedestrian Green")
+                checked: true
+            }
         }
         Button{
-            text: "Stop"
+            id: request_test
+            text: "Request Test"
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
         }
 
+        Rectangle{
+            width: cols.width
+            height: parent.height
+        }
+
+        ComboBox {
+            id: spinBox
+            width: 250
+            Layout.maximumWidth: 260
+            Layout.minimumWidth: 260
+            Layout.preferredWidth: 260
+
+            flat: true
+            currentIndex: 0
+            editable: false
+            model: ["Off",
+                "Blinking yellow",
+                "Yellow",
+                "Red & pedestrian red (1)",
+                "Red & pedestrian green",
+                "Red & pedestrian green & stop",
+                "Red & blinking pedestrian green",
+                "Red & pedestrian red (2)",
+                "Red-yellow",
+                "Green",
+                "Green & signal"]
+
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+        }
+        Button{
+            id: set_state
+            text: "Set State"
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+        }
+
+        Rectangle{
+            width: cols.width
+            height: parent.height
+        }
+        Button{
+            id: send_police
+            text: "Send Police Interrupt"
+            enabled: RESTClient.is_police()
+
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+        }
+        Button{
+            id: send_switch_on
+            text: "Switch On"
+            enabled: RESTClient.is_police() && RESTClient.is_off()
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+        }
+        Button{
+            id: send_switch_off
+            text: "Switch Off"
+            enabled: RESTClient.is_police() && !RESTClient.is_off()
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+        }
+
+
     }
-
-}
-Row{
-    anchors.top: main_layout.bottom
-    padding: 40
-
     Loader{
+        anchors.top: main_layout.bottom
+        width: parent.width
+        height: 0.389292196*width
         source: 'qrc:/stateMachine.qml'
     }
-}
+
 
 }
 
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/

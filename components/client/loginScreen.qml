@@ -3,6 +3,8 @@ import QtQuick.Window 2.10
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 
+import "RESTclient.js" as RESTClient
+
 
 
 Image {
@@ -11,7 +13,8 @@ Image {
     anchors.fill: parent
     signal signalScreenChange(string screenPath)
 
-
+    Keys.onEnterPressed: loginbtn.getAccess()
+    Keys.onReturnPressed: loginbtn.getAccess()
     ColumnLayout{
 
             anchors.horizontalCenter: parent.horizontalCenter
@@ -45,16 +48,17 @@ Image {
                Layout.preferredWidth: Math.max(backgroundimg.width / 6, 100)
                height: 25
 
+               focus: true
                TextInput{
                    id: usrname
                    visible: true
                    width: usrbg.width
                    autoScroll: true
-                   focus: true
                    font.family: "Courier New"
                    font.pointSize: 12
                    clip: true
                    KeyNavigation.tab: passw
+                   Component.onCompleted: usrname.forceActiveFocus()
                }
             }
 
@@ -78,7 +82,6 @@ Image {
                    visible: true
                    width: passbg.width
                    autoScroll: true
-                   focus: true
                    font.family: "Courier New"
                    font.pointSize: 12
                    clip: true
@@ -92,22 +95,20 @@ Image {
             Button{
 
                 function getAccess() {
-                    var xmlhttp = new XMLHttpRequest();
-                    var url = "OUR REST ADDRESS";
                     var username = usrname.text;
                     var password = passw.text;
-                    var md5 = Qt.md5(password);
 
                     if (username == ''){
                         return console.log('Missing username');
                     }
+
                     if (password == ''){
                         return console.log('Missing password');
                     }
+                    RESTClient.sign_in(username, password,
+                                       () => {backgroundimg.signalScreenChange("mainScreen.qml")},
+                                       () => {console.log("error"); backgroundimg.signalScreenChange("mainScreen.qml") }); //TODO: remove after debugging done!
 
-                   backgroundimg.signalScreenChange("mainScreen.qml")
-
-                   console.log(username+' '+md5);
                 }
 
                 id: loginbtn
