@@ -1,6 +1,5 @@
 package hu.conseqtv.serverlogic.controllers;
 
-import hu.conseqtv.serverlogic.payload.request.DeleteRequest;
 import hu.conseqtv.serverlogic.payload.request.LoginRequest;
 import hu.conseqtv.serverlogic.payload.request.ModificationRequest;
 import hu.conseqtv.serverlogic.payload.request.SignupRequest;
@@ -68,22 +67,23 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles));
     }
 
-    @PutMapping("/modify")
+    @PutMapping("/{username}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> modifyUser(@Valid @RequestBody ModificationRequest modificationRequest) {
-        logRepository.save(new Log("Trying to modify user " + modificationRequest.getUsername(), 0));
+    public ResponseEntity<?> modifyUser(@Valid @PathVariable String username, @Valid @RequestBody ModificationRequest modificationRequest) {
+        logRepository.save(new Log("Trying to modify user " + username, 0));
+        if(!username.equals(modificationRequest.getUsername())) return ResponseEntity.badRequest().body(new MessageResponse("Username and user.username don't match!"));
         Optional<User> user;
-        if(!(user = userRepository.findByUsername(modificationRequest.getUsername())).isPresent()) {
-            logRepository.save(new Log("User " + modificationRequest.getUsername() + " does not exist!", 2));
+        if(!(user = userRepository.findByUsername(username)).isPresent()) {
+            logRepository.save(new Log("User " + username + " does not exist!", 2));
             return ResponseEntity.badRequest().body(new MessageResponse("User does not exist!"));
         }
 
         if(modificationRequest.getPassword() != null) {
-            logRepository.save(new Log("Updating password of " + modificationRequest.getUsername(), 0));
+            logRepository.save(new Log("Updating password of " + username, 0));
             user.get().setPassword(encoder.encode(modificationRequest.getPassword()));
         }
         if(modificationRequest.getRole() != null) {
-            logRepository.save(new Log("Trying to update role of user " + modificationRequest.getUsername(), 0));
+            logRepository.save(new Log("Trying to update role of user " + username, 0));
             Role role;
             switch (modificationRequest.getRole()) {
                 case "admin":
@@ -103,18 +103,18 @@ public class AuthController {
             }
             user.get().getRoles().clear();
             user.get().getRoles().add(role);
-            logRepository.save(new Log("Updated role of user " + modificationRequest.getUsername(), 0));
+            logRepository.save(new Log("Updated role of user " + username, 0));
         }
         userRepository.save(user.get());
-        logRepository.save(new Log("User " + modificationRequest.getUsername() + " modified successfully", 0));
+        logRepository.save(new Log("User " + username + " modified successfully", 0));
         return ResponseEntity.ok(new MessageResponse("User modified successfully!"));
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/{username}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteUser(@Valid @RequestBody DeleteRequest deleteRequest) {
+    public ResponseEntity<?> deleteUser(@Valid @PathVariable String username) {
         Optional<User> user;
-        if((user = userRepository.findByUsername(deleteRequest.getUsername())).isPresent()) {
+        if((user = userRepository.findByUsername(username)).isPresent()) {
             if(userRepository.findAll().size() == 1) {
                 return ResponseEntity.badRequest().body(new MessageResponse("Last user cannot be deleted!"));
             }
@@ -126,7 +126,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/new")
+    @PostMapping("/")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         logRepository.save(new Log("Trying to register user " + signUpRequest.getUsername(), 0));

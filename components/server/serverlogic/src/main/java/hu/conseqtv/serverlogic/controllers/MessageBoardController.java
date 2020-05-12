@@ -1,6 +1,7 @@
 package hu.conseqtv.serverlogic.controllers;
 
 import hu.conseqtv.serverlogic.payload.request.MessageRequest;
+import hu.conseqtv.serverlogic.payload.response.MessageItemResponse;
 import hu.conseqtv.serverlogic.payload.response.MessageResponse;
 import hu.conseqtv.serverlogic.security.services.UserDetailsImpl;
 import hu.conseqtv.serverlogic.storage.messageboard.Message;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/messages")
@@ -28,14 +30,14 @@ public class MessageBoardController {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('USER') or hasRole('POLICE') or hasRole('ADMIN')")
-    public List<Message> allMessages() {
-        return messageRepository.findAll(getCurrentRole());
+    public List<MessageItemResponse> allMessages() {
+        return messageRepository.findAll(getCurrentRole()).stream().map(MessageItemResponse::new).collect(Collectors.toList());
     }
 
     @GetMapping("/filtered")
     @PreAuthorize("hasRole('USER') or hasRole('POLICE') or hasRole('ADMIN')")
-    public List<Message> filteredMessages(@Valid @RequestBody long since) {
-        return messageRepository.findAllWithCreationDateTimeAfter(since, getCurrentRole());
+    public List<MessageItemResponse> filteredMessages(@Valid @RequestParam long since) {
+        return (messageRepository.findAllWithCreationDateTimeAfter(since, getCurrentRole())).stream().map(MessageItemResponse::new).collect(Collectors.toList());
     }
 
     @PostMapping("/")

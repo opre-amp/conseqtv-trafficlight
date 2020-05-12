@@ -18,7 +18,7 @@ Flickable {
     interactive: true
     clip: true
     flickableDirection: Flickable.VerticalFlick
-    contentHeight: messagesList.height + user_mgmt.height + r_layout.height
+    contentHeight: messagesList.height + user_mgmt.height*2 + r_layout.height*2
 
     RowLayout {
         id: user_mgmt
@@ -34,20 +34,29 @@ Flickable {
             Button {
                 id: newuser
                 text: qsTr("Add User")
+                onClicked: newuser_popup.open()
             }
 
             Button {
                 id: modifyuser
                 text: qsTr("Modify User")
+                onClicked: moduser_popup.open()
             }
 
             Button {
                 id: deleteuser
                 text: qsTr("Delete User")
+                onClicked: deluser_popup.open()
             }
-
-
-
+    }
+    NewuserPopup {
+        id: newuser_popup
+    }
+    ModuserPopup {
+        id: moduser_popup
+    }
+    DeluserPopup {
+        id: deluser_popup
     }
 
     RowLayout {
@@ -59,13 +68,12 @@ Flickable {
         Rectangle{
             id: base
             Layout.fillWidth: true
-            height: messageField.height
+            height: messageField.implicitHeight
             color: "lavender"
 
             TextField {
                 id: messageField
                 width: base.width
-                Layout.fillHeight: true
                 focus: true
                 font.family: "Courier New"
                 font.pointSize: 12
@@ -87,11 +95,34 @@ Flickable {
             text: qsTr("Send")
             enabled: messageField.length > 0
             function send() {
-                messagesList.model.sendMessage("Me",group.currentText, messageField.text);
-                messageField.text = "";
+                if(messageField.length > 0) RESTClient.post_message(RESTClient.get_username(), messageField.text, group.currentValue, ()=>messageField.text = "", console.log)
             }
-
             onClicked: send()
+        }
+        property var last_msg: 0
+        Component.onCompleted: RESTClient.get_messages_all(
+                                   (text)=>{
+                                       JSON.parse(text).forEach((msg)=>{
+                                                message_list_model.insert(0, msg);
+                                                r_layout.last_msg = +(msg.timestamp);
+                                            });
+                                            message_sync.running = true;
+                                }, console.log)
+
+        Timer {
+            id: message_sync
+            interval: 500
+            repeat: true
+            running: false
+            onTriggered: {
+                RESTClient.get_messages_filtered(r_layout.last_msg,
+                                                 (text)=>{
+                                                     JSON.parse(text).forEach((msg)=>{
+                                                              message_list_model.insert(0, msg);
+                                                              r_layout.last_msg = +(msg.timestamp);
+                                                          });
+                                              }, console.log)
+            }
         }
     }
 
@@ -102,7 +133,8 @@ Flickable {
         width: parent.width
         height: childrenRect.height
         clip: true
-        model: MessageTableModel {
+        model: ListModel {
+            id: message_list_model;
         }
         delegate:
             Column{
@@ -144,10 +176,11 @@ Flickable {
             Row{
                 Rectangle {
                     width: fparent.width
-                    height: messageText.implicitHeight
+                    height: messageText.height + 10
                     Text{
                         id: messageText
-                        width: fparent.width
+                        width: fparent.width - 10
+                        anchors.centerIn: parent
                         text: model.message
                         font.family: "Courier New"
                         font.pointSize: 12
@@ -159,9 +192,6 @@ Flickable {
 
         }
         interactive: true
-        onCountChanged: {
-            messagesList.positionViewAtEnd()
-        }
     }
 }
 

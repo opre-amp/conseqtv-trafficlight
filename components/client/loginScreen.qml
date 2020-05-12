@@ -107,7 +107,7 @@ Image {
                     }
                     RESTClient.sign_in(username, password,
                                        () => {backgroundimg.signalScreenChange("mainScreen.qml")},
-                                       () => {console.log("error"); backgroundimg.signalScreenChange("mainScreen.qml") }); //TODO: remove after debugging done!
+                                       console.log);
 
                 }
 

@@ -1,4 +1,8 @@
 package hu.conseqtv.serverlogic.controllers;
+
+import hu.conseqtv.serverlogic.storage.log.Log;
+import hu.conseqtv.serverlogic.storage.log.LogRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,8 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/apitest")
 public class TestController {
+
+    @Autowired
+    LogRepository logRepository;
+
     @GetMapping("/all")
     public String allAccess() {
+        logRepository.save(new Log("Hello_INFO", 0));
+        logRepository.save(new Log("Hello_WARN", 1));
+        logRepository.save(new Log("Hello_ERR!", 2));
         return "Public Content.";
     }
 

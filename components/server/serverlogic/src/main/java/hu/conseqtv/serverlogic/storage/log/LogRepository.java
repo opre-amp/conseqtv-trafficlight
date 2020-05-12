@@ -9,11 +9,9 @@ import java.util.List;
 
 @Repository
 public interface LogRepository extends JpaRepository<Log, Integer> {
-    @Query("select a from Log a where a.creationDateTime > :creationDateTime and a.logLevel > :minLogLevel")
+    @Query("select a from Log a where a.creationDateTime > :creationDateTime and a.logLevel >= :minLogLevel")
     List<Log> findAllWithCreationDateTimeAfter(
             @Param("creationDateTime") long creationDateTime,
             @Param("minLogLevel") int logLevel);
 
-    @Override
-    List<Log> findAll();
 }

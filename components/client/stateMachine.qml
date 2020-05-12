@@ -6,6 +6,8 @@ import QtQml.StateMachine 1.14 as DSM
 
 import userdata 1.0
 
+import 'RESTclient.js' as RESTClient
+
 
 Image{
     id: display_img
@@ -36,6 +38,17 @@ Image{
         display_img.source = 'qrc:/fsm/Images/' + lut.indexOf(state) + '.png'
     }
 
+    Timer {
+        interval: 500
+        repeat: true
+        running: true
+        onTriggered: {
+            RESTClient.get_signal((state)=>pedsignal.visible = state == 1, console.log);
+            RESTClient.get_stopped((state)=>carsignal.visible = state == 1, console.log);
+            RESTClient.get_state((state)=>showState(state), console.log);
+        }
+    }
+
     Repeater{
         id: spinboxes
         model: 9
@@ -44,12 +57,27 @@ Image{
                from: 10
                value: 1000
                to: 10000
-               stepSize: 10
+               stepSize: 100
                width: 60
                height: 30
+               editable: true
                x: display_img.width*getX(index)
                y: display_img.height*getY(index)
-               onValueChanged: showState("Green")
+               onValueChanged: pedsignal.visible = !pedsignal.visible
+        }
+    }
+
+    Column{
+        anchors.margins: 10
+        Text{
+            id: pedsignal
+            visible: false
+            text: "Pedestrian signal pending"
+        }
+        Text{
+            id: carsignal
+            visible: false
+            text: "Car stopped signal pending"
         }
     }
 

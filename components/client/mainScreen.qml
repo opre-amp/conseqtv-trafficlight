@@ -4,6 +4,9 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.Styles 1.4
+
+import 'RESTclient.js' as RESTClient
+
 Item {
     id: mainScreenItem
     width: Window.width
@@ -40,6 +43,16 @@ Item {
             font.pointSize: 26
             text: "CONSEQTV"
             color: "white"
+        }
+        Timer {
+            interval: 500
+            running: true
+            repeat: true
+            onTriggered: {
+                RESTClient.get_heartbeat();
+                server_status.text = RESTClient.is_reachable() ? "Available" : "Unavailable";
+                device_status.text = RESTClient.is_device_reachable() ? "Available" : "Unavailable";
+            }
         }
 
         Row{
@@ -78,28 +91,10 @@ Item {
             }
         }
 
-        Row {
+        Row{
             id: row_3
             anchors.right: headline.right
             anchors.top: row_2.bottom
-            Label{
-                text: "Last update: "
-                font.family: "Courier New"
-                font.pointSize: 12
-                color: "white"
-            }
-            Text {
-                id: update_time
-                text: "Unknown"
-                font.family: "Courier New"
-                font.pointSize: 12
-                color: "white"
-            }
-        }
-        Row{
-            id: row_4
-            anchors.right: headline.right
-            anchors.top: row_3.bottom
             anchors.bottom: headline.bottom
             Timer {
                     id: text_timer
@@ -152,6 +147,7 @@ Item {
             id: stattab
             title: "Logs"
             source: 'qrc:/statScreen.qml'
+            enabled: RESTClient.is_admin()
         }
 
         Tab{
@@ -186,7 +182,7 @@ Item {
                     onClicked: logout()
 
                     function logout(){
-                        console.log('User logged out');
+                        RESTClient.sign_out()
                         mainScreenItem.signalScreenChange("loginScreen.qml")
                     }
                 }
@@ -209,8 +205,4 @@ Item {
     }
 }
 
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
-##^##*/
+

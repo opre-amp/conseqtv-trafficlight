@@ -45,8 +45,8 @@ public class TrafficLight {
 
     public void registerHeartbeatHandler(HeartbeatHandler handler){}
     public void registerErrorHandler(ErrorHandler handler){}
-
-    public String getState(){return states[1];}
+int i = 0;
+    public String getState(){return states[i++ % states.length];}
 
     public int setState(String state){return 1;}
 
@@ -79,6 +79,6 @@ public class TrafficLight {
     public int testPgrn(){return 1;}
 
     public int getStopped(){return 0;}
-    public int getSignal(){return 0;}
+    public int getSignal(){return 1;}
 
 }

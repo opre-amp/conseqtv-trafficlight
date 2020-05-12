@@ -24,12 +24,19 @@ public class TrafficLightController {
     private TrafficLight trafficLight;
     @Autowired
     private LogRepository logRepository;
+    private MyHeartbeatHandler heartbeatHandler;
 
     public TrafficLightController() {
         trafficLight = new TrafficLight();
-        trafficLight.registerHeartbeatHandler(new MyHeartbeatHandler());
+        trafficLight.registerHeartbeatHandler(heartbeatHandler = new MyHeartbeatHandler());
         trafficLight.registerErrorHandler(new MyErrorHandler());
         int2tests = new HashMap<>();
+    }
+
+    @GetMapping("/lastheartbeat")
+    @PreAuthorize("hasRole('USER') or hasRole('POLICE') or hasRole('ADMIN')")
+    public long getLastHeartbeat(){
+        return heartbeatHandler.getLastHeartbeat();
     }
 
 
@@ -57,7 +64,7 @@ public class TrafficLightController {
 
     @PostMapping("/inputs/switch")
     @PreAuthorize("hasRole('POLICE') or hasRole('ADMIN')")
-    public ResponseEntity<?> sendSwitch(@Valid @RequestBody int state) {
+    public ResponseEntity<?> sendSwitch(@Valid @RequestParam int state) {
         int status;
         switch (state) {
             case 0: status = trafficLight.sendSignal(TrafficLight.getSignals().get(1)); break;
@@ -173,6 +180,11 @@ public class TrafficLightController {
                 String state = trafficLight.getState();
                 trafficLight.setState(TrafficLight.getStates().get(0));
                 for (String s : whatToTest) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     switch (s) {
                         case "red":
                             if (trafficLight.testRed() == 0) {
