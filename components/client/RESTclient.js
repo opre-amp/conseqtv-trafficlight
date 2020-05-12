@@ -3,7 +3,7 @@ var saved_username;
 var token;
 var role;
 var state = "Off";
-const url_base = 'http://localhost:8080/'
+const url_base = 'http://10.0.1.119:8080/'
 
 var last_reachable = 0;
 var last_heartbeat = 0;
@@ -26,6 +26,10 @@ function rest_request(url_extension, request_type, body, body_type, onSuccess, o
     xmlHttp.setRequestHeader("Content-Type", body_type);
     if(use_token) xmlHttp.setRequestHeader('Authorization', 'Bearer ' + token);
     xmlHttp.send(body);
+}
+
+function init(onSuccess, onError) {
+    rest_request("users/init", "POST", null, "text/plain", onSuccess, onError);
 }
 
 

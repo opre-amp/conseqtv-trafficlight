@@ -1,12 +1,11 @@
 package hu.conseqtv.serverlogic.storage.users;
 import hu.conseqtv.serverlogic.storage.roles.Role;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(	name = "users",
@@ -33,6 +32,14 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     public User() {
+    }
+
+    public User(String username, String password, Role role) {
+        this.username = username;
+        this.password = password;
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        this.roles = roles;
     }
 
     public User(String username, String password) {

@@ -53,6 +53,18 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+    @PostMapping("/init")
+    public ResponseEntity<?> init() {
+        for(ERole eRole : ERole.values()) {
+            if(!roleRepository.findByName(eRole).isPresent())roleRepository.save(new Role(eRole));
+        }
+        if(userRepository.findAll().size() == 0) {
+            User user = new User("admin", encoder.encode("admin12345"), roleRepository.findByName(ERole.ROLE_ADMIN).get());
+            userRepository.save(user);
+        }
+        return ResponseEntity.ok(new MessageResponse("Initialized successfully"));
+    }
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         logRepository.save(new Log("Started user authentication for " + loginRequest.getUsername(), 0));

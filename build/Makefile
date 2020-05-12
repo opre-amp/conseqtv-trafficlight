@@ -40,6 +40,7 @@ $(DEB_NAME).deb: $(ARTIFACTS)
 	cp libmailbox.so $(DEB_NAME)/usr/lib/
 	cp libmailbox_javacompat.so $(DEB_NAME)/usr/lib/
 	cp server.jar $(DEB_NAME)/tmp/
+	cp serverlogic.jar $(DEB_NAME)/tmp/
 	mkdir -p $(DEB_NAME)/etc/systemd/system
 	cp conseqtv-server.service $(DEB_NAME)/etc/systemd/system/
 	dpkg-deb --build $(DEB_NAME)
@@ -50,7 +51,7 @@ control:
 	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: armhf\nReplaces: raspberrypi-kernel\nDepends: openjdk-8-jre-headless\nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
 
 postinst:
-	printf "#!/bin/bash\nsudo cp /tmp/server.jar /home/*/\nsudo cp -r /tmp/boot/* /boot/\nsudo systemctl enable conseqtv-server\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
+	printf "#!/bin/bash\nsudo cp /tmp/server.jar /home/*/\nsudo cp /tmp/serverlogic.jar /home/*/\nsudo cp -r /tmp/boot/* /boot/\nsudo systemctl enable conseqtv-server\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
 	chmod 755 $@
 
 conseqtv-server.service:
@@ -171,6 +172,14 @@ send_data: $(COMPONENTS_PATH)/server/send_data/send_data
 
 $(COMPONENTS_PATH)/server/send_data/send_data:
 	$(MAKE) -C $(COMPONENTS_PATH)/server/send_data
+
+
+serverlogic.jar: $(COMPONENTS_PATH)/server/serverlogic/build/libs/serverlogic-1.0-SNAPSHOT.jar
+	cp $< $@ 
+
+$(COMPONENTS_PATH)/server/serverlogic/build/libs/serverlogic-1.0-SNAPSHOT.jar: server.jar
+	cp $< $(COMPONENTS_PATH)/server/serverlogic/libs/mailbox_api.jar
+	cd $(COMPONENTS_PATH)/server/serverlogic && ./gradlew build
 
 clean:
 	-find . -type d,f -not -name 'Makefile' -exec rm -rf {} +

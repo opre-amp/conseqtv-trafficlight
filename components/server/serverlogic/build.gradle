@@ -28,7 +28,7 @@ jar {
 }
 
 dependencies {
-    //implementation name: 'mailbox_api'
+    implementation name: 'mailbox_api'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     compile "org.springframework.boot:spring-boot-starter-web"
