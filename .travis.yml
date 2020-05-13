@@ -3,7 +3,7 @@ dist: bionic
 install:
 - sudo apt-get update && sudo apt-get install docker.io flex bison u-boot-tools gcc-8-arm-linux-gnueabihf-base gcc-arm-none-eabi
 script:
-- sudo systemctl unmask docker && sudo systemctl start docker && sudo docker run -it -v "$PWD:/repo" ubuntu:eoan bash -c "apt-get --assume-yes update && apt-get --assume-yes install make openjdk-8-jdk git flex bc bison u-boot-tools gcc-arm-linux-gnueabihf gcc-arm-none-eabi libssl-dev && ln -sf /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/default && cd /repo/build && make -j$(nproc) ConseqtvClient && ls"
+- sudo systemctl unmask docker && sudo systemctl start docker && sudo docker run -it -v "$PWD:/repo" ubuntu:eoan bash -c "apt-get --assume-yes update && apt-get --assume-yes install make openjdk-8-jdk git flex bc bison u-boot-tools gcc-arm-linux-gnueabihf gcc-arm-none-eabi libssl-dev && ln -sf /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/default && cd /repo/build && make -j$(nproc) && ls"
 before_deploy: |
   function keep_alive() {
     while true; do
@@ -18,7 +18,7 @@ deploy:
   api_key:
     secure: mkybJPrEFLPbaATir2RQWXenbqsSgSk5dzLfMT2TNTSMWVQimhia2jq/pQEbPuG0E7hhXdDB1YKfm5fXQhku+OK25KpTEYpNF5lcMHOLdjB7Mip018ihu6b0tfol33skeb4a39dVeThHJ810jnAJUbbwMwLZIlvwMB6W7m7AlNRojLtLdbwQ9sDvT2cac9e6SupOaKaJw3tsjgFQHbmp9L5esm6te1XLM7Bzc3GCbGYPSHJAaZd9RDBmT5JY/oTlyJJVqTESQ+iKifu6V1ridFEe3R2AoH0+TXZL2FeSSKuSeGHuySnwmn9QFacuuPDfV6A9aqlm5n4y0/+2h8rYlmZfXd6Ty+5mBgFAshGfmeOyLMEWMWIOhpvDUTXDmTTE7+t17SEmXyZdu1AtQbSCDOROzGJuDlgimVKV70BO/pg/hBQZcjD56qTwcP8Ezt1wzgygivIdIePfa/jVAj+d3y5YQLRgjxaKFBL00AUaA6pCp4Qt9l2BmjCLWjdWfgmd0wJpAgcoELO9FV+VQB32wKPAFtg3bptQtJLCzlzurJnVJKrTTpgjZzBksupwBjJ6RJzKgmR8kdlTcwnNmkx6cqtAjv7V7iRu8ndjKYKVBtsO5VLEpCO3wM/cB7LZiF1Qd8OSNWjK+qr4O1+V/N6cX9x5N4458/eLvpwQZ83EcwI=
   file: 
-    #- build/conseqtv-server.deb
+    - build/conseqtv-server.deb
     - build/ConseqtvClient
   on:
     repo: opre-amp/conseqtv-trafficlight
