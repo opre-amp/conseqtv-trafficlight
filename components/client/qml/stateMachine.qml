@@ -2,9 +2,6 @@ import QtQuick 2.14
 import QtQuick.Window 2.10
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
-import QtQml.StateMachine 1.14 as DSM
-
-import userdata 1.0
 
 import 'RESTclient.js' as RESTClient
 
@@ -43,6 +40,7 @@ Image{
     }
 
     Timer {
+        id: fsmtimer
         interval: 500
         repeat: true
         running: true
@@ -51,6 +49,7 @@ Image{
             RESTClient.get_stopped((state)=>carsignal.visible = state == 1, console.log);
             RESTClient.get_state((state)=>showState(state), console.log);
         }
+        Component.onDestruction: fsmtimer.running = false
     }
 
     Repeater{

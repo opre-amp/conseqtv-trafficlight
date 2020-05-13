@@ -2,10 +2,6 @@ import QtQuick 2.14
 import QtQuick.Window 2.10
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
-import QtQml.StateMachine 1.14 as DSM
-
-import userdata 1.0
-import delaysettings 1.0
 
 import 'RESTclient.js' as RESTClient
 
@@ -169,6 +165,7 @@ Flickable{
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
         }
         Timer {
+            id: buttontimer
             interval: 100
             repeat: true
             running: RESTClient.is_police()
@@ -176,6 +173,7 @@ Flickable{
                 send_switch_off.enabled = !RESTClient.is_off();
                 send_switch_on.enabled  =  RESTClient.is_off();
             }
+            Component.onDestruction: buttontimer.running = false
         }
 
 

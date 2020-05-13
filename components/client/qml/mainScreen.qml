@@ -45,6 +45,7 @@ Item {
             color: "white"
         }
         Timer {
+            id: reachable_timer
             interval: 500
             running: true
             repeat: true
@@ -53,6 +54,8 @@ Item {
                 server_status.text = RESTClient.is_reachable() ? "Available" : "Unavailable";
                 device_status.text = RESTClient.is_device_reachable() ? "Available" : "Unavailable";
             }
+
+            Component.onDestruction: reachable_timer.running = false
         }
 
         Row{
@@ -102,8 +105,8 @@ Item {
                     repeat: true
                     running: true
                     triggeredOnStart: true
-                    onTriggered: function setTime() {
-                        time_text.text = Qt.formatTime(new Date(), "hh:mm:ss")}
+                    onTriggered: time_text.text = Qt.formatTime(new Date(), "hh:mm:ss")
+                    Component.onDestruction: text_timer.running = false
             }
             Text {
                 id: time_text

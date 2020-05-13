@@ -4,7 +4,6 @@ import QtQuick.Window 2.10
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Styles 1.4
 
-import tablemodel 1.0
 
 import 'RESTclient.js' as RESTClient
 
@@ -27,7 +26,10 @@ Flickable {
         anchors.right: parent.right
         Button {
             text: "Clear"
-            onClicked: log_list_model.clear()
+            onClicked: {
+                log_list_model.clear();
+                logList.first_log = logList.last_log;
+            }
         }
 
         ComboBox{
@@ -112,18 +114,21 @@ Flickable {
 
         Timer {
             id: log_sync
-            interval: 100
+            interval: 1000
             repeat: true
             running: true
             onTriggered: {
                 RESTClient.get_filtered_logs(logList.last_log,loglevel_combobox.currentIndex,
                                                  (text)=>{
                                                      JSON.parse(text).forEach((log)=>{
-                                                              log_list_model.insert(0, log);
-                                                              logList.last_log = +(log.creationDateTime);
+                                                                if(+(log.creationDateTime) > logList.first_log && log.logLevel >= loglevel_combobox.currentIndex) {
+                                                                log_list_model.insert(0, log);
+                                                                logList.last_log = +(log.creationDateTime);
+                                                                }
                                                           });
                                               }, console.log)
             }
+            Component.onDestruction: log_sync.running = false
         }
         interactive: true
         onModelChanged: {

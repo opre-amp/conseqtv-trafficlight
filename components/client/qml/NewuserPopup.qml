@@ -4,8 +4,6 @@ import QtQuick.Window 2.10
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Styles 1.4
 
-import tablemodel 1.0
-
 import 'RESTclient.js' as RESTClient
 
 Dialog {

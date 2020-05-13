@@ -29,6 +29,16 @@ Image {
                     text: "CONSEQTV"
                     color: "white"
                 }
+            Label {
+                id: error_txt
+                horizontalAlignment: "AlignHCenter"
+                width: parent.width
+                font.family: "Courier New"
+                font.pointSize: 14
+                text: "Error"
+                color: "red"
+                visible: false
+            }
             Label{
                 width: 10
                 height: 80
@@ -105,9 +115,10 @@ Image {
                     if (password == ''){
                         return console.log('Missing password');
                     }
+                    loginbtn.enabled = false;
                     RESTClient.sign_in(username, password,
-                                       () => {backgroundimg.signalScreenChange("mainScreen.qml")},
-                                       console.log);
+                                       () => {backgroundimg.signalScreenChange("mainScreen.qml"); loginbtn.enabled = true; error_txt.visible = false;},
+                                       (text) => {loginbtn.enabled = true; error_txt.text = "Error logging in!"; error_txt.visible = true; });
 
                 }
 

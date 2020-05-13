@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/background/Images">
-        <file>Images/NewYork_Lights2.png</file>
-        <file>Images/icon.png</file>
+        <file>NewYork_Lights2.png</file>
+        <file>icon.png</file>
     </qresource>
     <qresource prefix="/fsm/Images">
         <file>0.png</file>

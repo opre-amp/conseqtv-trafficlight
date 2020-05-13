@@ -20,7 +20,7 @@ function rest_request(url_extension, request_type, body, body_type, onSuccess, o
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
             onSuccess(xmlHttp.responseText);
-        else if (xmlHttp.readyState == 4) onError(xmlHttp.status + ': ' + xmlHttp.responseText)
+        else if (xmlHttp.readyState == 4) onError("XHR error: " + xmlHttp.status + ': ' + xmlHttp.responseText)
     }
     xmlHttp.open(request_type, url_base + url_extension, true);
     xmlHttp.setRequestHeader("Content-Type", body_type);
@@ -103,7 +103,7 @@ function get_stopped(onSuccess, onError) {
 }
 
 function get_time(timing, onSuccess, onError) {
-    rest_request("trafficlight/times/" + timing, "GET", null, "text/plain", (text) => { console.log(text); onSuccess(text); }, onError, true);
+    rest_request("trafficlight/times/" + timing, "GET", null, "text/plain", onSuccess, onError, true);
 }
 
 function set_state(state, onSuccess, onError) {
