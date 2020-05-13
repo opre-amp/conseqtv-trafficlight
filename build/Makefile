@@ -5,7 +5,7 @@ export
 
 DEB_NAME = conseqtv-server
 
-ARTIFACTS = controller.img loader mailbox.ko zImage modules.tar.gz dtbs.tar.gz u-boot.bin boot.scr config.txt libmailbox.so libmailbox_javacompat.so server.jar  control postinst conseqtv-server.service send_data serverlogic.jar
+ARTIFACTS = ConseqtvClient controller.img loader mailbox.ko zImage modules.tar.gz dtbs.tar.gz u-boot.bin boot.scr config.txt libmailbox.so libmailbox_javacompat.so server.jar  control postinst conseqtv-server.service send_data serverlogic.jar
 
 PI := bcm2710-rpi-3-b-plus
 
@@ -40,7 +40,7 @@ $(DEB_NAME).deb: $(ARTIFACTS)
 	cp libmailbox.so $(DEB_NAME)/usr/lib/
 	cp libmailbox_javacompat.so $(DEB_NAME)/usr/lib/
 	cp server.jar $(DEB_NAME)/tmp/
-	cp serverlogic.jar $(DEB_NAME)/tmp/
+	cp serverlogic.jar $(DEB_NAME)/usr/share/$(DEB_NAME)/
 	mkdir -p $(DEB_NAME)/etc/systemd/system
 	cp conseqtv-server.service $(DEB_NAME)/etc/systemd/system/
 	dpkg-deb --build $(DEB_NAME)
@@ -55,7 +55,16 @@ postinst:
 	chmod 755 $@
 
 conseqtv-server.service:
-	printf "[Unit]\nDescription=Starts the controller software on boot.\n\n[Service]\nType=simple\nExecStartPre=depmod -a\nExecStartPre=modprobe mailbox\nExecStartPre=loader /usr/share/conseqtv-server/controller.img\nExecStart=java -jar /home/pi/server.jar && while true; do sleep 1; done\nExecStop=send_data stop\nExecStopPost=rmmod mailbox\n\n[Install]\nWantedBy=multi-user.target" > $@
+	printf "[Unit]\nDescription=Starts the controller software on boot.\n\n[Service]\nType=simple\nExecStartPre=depmod -a\nExecStartPre=modprobe mailbox\nExecStartPre=loader /usr/share/conseqtv-server/controller.img\nExecStart=java -jar /home/pi/server.jar\n\n[Install]\nWantedBy=multi-user.target" > $@
+
+
+
+ConseqtvClient: $(COMPONENTS_PATH)/client/ConseqtvClient
+	cp $< $@
+
+$(COMPONENTS_PATH)/client/ConseqtvClient: 
+	cd $(COMPONENTS_PATH)/client && qmake -o Makefile ConseqtvClient.pro
+	$(MAKE) -C $(COMPONENTS_PATH)/client
 
 
 
