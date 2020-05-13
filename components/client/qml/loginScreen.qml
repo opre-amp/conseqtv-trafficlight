@@ -134,6 +134,6 @@ Image {
 
         }
     Component.onCompleted: {
-        RESTClient.init(console.log, console.log);
+        RESTClient.init(()=>{}, console.log);
     }
 }

@@ -38,6 +38,10 @@ Image{
         display_img.source = 'qrc:/fsm/Images/' + lut.indexOf(state) + '.png'
     }
 
+    function getTiming(index) {
+        return ["A", "B", "C", "C'", "D", "E", "F", "G", "H"][index];
+    }
+
     Timer {
         interval: 500
         repeat: true
@@ -63,7 +67,19 @@ Image{
                editable: true
                x: display_img.width*getX(index)
                y: display_img.height*getY(index)
-               onValueChanged: pedsignal.visible = !pedsignal.visible
+               onValueChanged: RESTClient.set_time(display_img.getTiming(index), value, ()=>{}, console.log);
+        }
+
+        Component.onCompleted: {
+            RESTClient.get_time("A", (time)=> spinboxes.itemAt(0).value = +(time), console.log);
+            RESTClient.get_time("B", (time)=> spinboxes.itemAt(1).value = +(time), console.log);
+            RESTClient.get_time("C", (time)=> spinboxes.itemAt(2).value = +(time), console.log);
+            RESTClient.get_time("C'", (time)=> spinboxes.itemAt(3).value = +(time), console.log);
+            RESTClient.get_time("D", (time)=> spinboxes.itemAt(4).value = +(time), console.log);
+            RESTClient.get_time("E", (time)=> spinboxes.itemAt(5).value = +(time), console.log);
+            RESTClient.get_time("F", (time)=> spinboxes.itemAt(6).value = +(time), console.log);
+            RESTClient.get_time("G", (time)=> spinboxes.itemAt(7).value = +(time), console.log);
+            RESTClient.get_time("H", (time)=> spinboxes.itemAt(8).value = +(time), console.log);
         }
     }
 

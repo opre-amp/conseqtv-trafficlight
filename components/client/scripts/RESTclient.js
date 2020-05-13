@@ -103,7 +103,7 @@ function get_stopped(onSuccess, onError) {
 }
 
 function get_time(timing, onSuccess, onError) {
-    rest_request("trafficlight/times/" + timing, "GET", null, "text/plain", onSuccess, onError, true);
+    rest_request("trafficlight/times/" + timing, "GET", null, "text/plain", (text) => { console.log(text); onSuccess(text); }, onError, true);
 }
 
 function set_state(state, onSuccess, onError) {
@@ -111,7 +111,7 @@ function set_state(state, onSuccess, onError) {
 }
 
 function set_time(timing, value, onSuccess, onError) {
-    rest_request("trafficlight/times/" + timing, "PUT", value, "text/plain", onSuccess, onError, true);
+    rest_request("trafficlight/times/" + timing + "?value=" + value, "PUT", null, "text/plain", onSuccess, onError, true);
 }
 
 function get_messages_all(onSuccess, onError) {

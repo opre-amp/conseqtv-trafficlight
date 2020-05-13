@@ -26,10 +26,11 @@ public class TrafficLightController {
     private LogRepository logRepository;
     private MyHeartbeatHandler heartbeatHandler;
 
-    public TrafficLightController() {
+    @Autowired
+    public TrafficLightController(MyErrorHandler myErrorHandler) {
         trafficLight = new TrafficLight();
         trafficLight.registerHeartbeatHandler(heartbeatHandler = new MyHeartbeatHandler());
-        trafficLight.registerErrorHandler(new MyErrorHandler());
+        trafficLight.registerErrorHandler(myErrorHandler);
         int2tests = new HashMap<>();
     }
 
@@ -142,7 +143,7 @@ public class TrafficLightController {
 
     @PutMapping("/times/{timing}")
     @PreAuthorize("hasRole('USER') or hasRole('POLICE') or hasRole('ADMIN')")
-    public ResponseEntity<?> setTime(@PathVariable String timing, @Valid @RequestBody int value) {
+    public ResponseEntity<?> setTime(@PathVariable String timing, @Valid @RequestParam int value) {
         logRepository.save(new Log("Setting timing " + timing + " to " + value , 0));
         int status;
         switch(timing) {

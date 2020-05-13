@@ -5,7 +5,7 @@ export
 
 DEB_NAME = conseqtv-server
 
-ARTIFACTS = controller.img loader mailbox.ko zImage modules.tar.gz dtbs.tar.gz u-boot.bin boot.scr config.txt libmailbox.so libmailbox_javacompat.so server.jar  control postinst conseqtv-server.service send_data
+ARTIFACTS = controller.img loader mailbox.ko zImage modules.tar.gz dtbs.tar.gz u-boot.bin boot.scr config.txt libmailbox.so libmailbox_javacompat.so server.jar  control postinst conseqtv-server.service send_data serverlogic.jar
 
 PI := bcm2710-rpi-3-b-plus
 

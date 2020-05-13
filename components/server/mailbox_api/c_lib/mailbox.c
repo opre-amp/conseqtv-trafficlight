@@ -256,10 +256,10 @@ static int reader(void* param)
         else if(sscanf(buf, btnp_res, &get_signal_scanned_param) == 1) {
             cnd_broadcast(&get_signal_cnd);
         }
-        else if(sscanf(buf, recving, &setstate_scanned_param) == 1) {
+        else if(sscanf(buf, recving, &getstate_scanned_param) == 1) {
             cnd_broadcast(&get_state_cnd);
         }
-        else if(sscanf(buf, setstate, &getstate_scanned_param) == 1) {
+        else if(sscanf(buf, setstate, &setstate_scanned_param) == 1) {
             cnd_broadcast(&set_state_cnd);
         }
         else if(sscanf(buf, sending, send_signal_scanned_param) == 1) {
@@ -357,7 +357,7 @@ int get_state(char* buf, int len)
         if(error_hndlr) error_hndlr("Request timed out or interrupted!");
         return -1;
     }
-    switch(setstate_scanned_param) {
+    switch(getstate_scanned_param) {
         case ERR:          if(strlen("ERR") < len) { strcpy(buf, "Error"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
         case OFF:          if(strlen("OFF") < len) { strcpy(buf, "Off"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
         case BL_YELLOW:    if(strlen("BL_YELLOW") < len) { strcpy(buf, "Blinking yellow"); } else { if(error_hndlr) error_hndlr("Buffer not long enough!"); return -1; } break;
@@ -402,7 +402,7 @@ int set_state(char* buf)
         if(error_hndlr) error_hndlr("Request timed out or interrupted!");
         return -1;
     }
-    if(getstate_scanned_param != state_id) {
+    if(setstate_scanned_param != state_id) {
         if(error_hndlr) error_hndlr("*CRITICAL* somehow set to wrong state.");
         return -1;
     }
@@ -619,7 +619,64 @@ int get_time_A()
 {
     int ret;
     ret = call_async(&get_time_A_cnd, 1, create_sstring(3, time_buf, "A", "?"));
+    return get_time_A_scanned_param;
+}
 
+int get_time_B()
+{
+    int ret;
+    ret = call_async(&get_time_B_cnd, 1, create_sstring(3, time_buf, "B", "?"));
+    return get_time_B_scanned_param;
+}
+
+int get_time_C()
+{
+    int ret;
+    ret = call_async(&get_time_C_cnd, 1, create_sstring(3, time_buf, "C", "?"));
+    return get_time_C_scanned_param;
+}
+
+int get_time_C_()
+{
+    int ret;
+    ret = call_async(&get_time_C__cnd, 1, create_sstring(3, time_buf, "c", "?"));
+    return get_time_C__scanned_param;
+}
+
+int get_time_D()
+{
+    int ret;
+    ret = call_async(&get_time_D_cnd, 1, create_sstring(3, time_buf, "D", "?"));
+    return get_time_D_scanned_param;
+}
+
+int get_time_E()
+{
+    int ret;
+    ret = call_async(&get_time_E_cnd, 1, create_sstring(3, time_buf, "E", "?"));
+    return get_time_E_scanned_param;
+}
+
+int get_time_F()
+{
+    int ret;
+    ret = call_async(&get_time_F_cnd, 1, create_sstring(3, time_buf, "F", "?"));
+    return get_time_F_scanned_param;
+}
+
+int get_time_G()
+{
+    int ret;
+    ret = call_async(&get_time_G_cnd, 1, create_sstring(3, time_buf, "G", "?"));
+    return get_time_G_scanned_param;
+
+}
+
+int get_time_H()
+{
+    int ret;
+    ret = call_async(&get_time_H_cnd, 1, create_sstring(3, time_buf, "H", "?"));
+    return get_time_H_scanned_param;
 }
 
 int test_red()

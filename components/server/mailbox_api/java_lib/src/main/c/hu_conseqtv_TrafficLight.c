@@ -39,6 +39,7 @@ static int err_initialized = 0;
 
 static void handle_err(char* buf) 
 {
+  printf("Error: %s", buf);
     if(!err_initialized) {
         (*vm)->AttachCurrentThread(vm, (void**)&err_env, NULL);
         err_initialized = 1;
@@ -75,7 +76,8 @@ JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_uninitMailbox
 JNIEXPORT jstring JNICALL Java_hu_conseqtv_TrafficLight_getState
   (JNIEnv * env, jobject obj) {
       char buf[50];
-      return !get_state(buf, 50) ? (*env)->NewStringUTF(env, buf) : (*env)->NewStringUTF(env, "ERR");
+      int i = get_state(buf, 50);
+      return !i ? (*env)->NewStringUTF(env, buf) : (*env)->NewStringUTF(env, "ERR");
   }
 
 JNIEXPORT jint JNICALL Java_hu_conseqtv_TrafficLight_setState

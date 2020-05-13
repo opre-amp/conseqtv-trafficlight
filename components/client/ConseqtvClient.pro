@@ -48,7 +48,8 @@ DISTFILES += \
     statScreen.qml
 
 RESOURCES += \
-    QMLresources.qrc \
-    imgResources.qrc
+    qml/resources.qrc \
+    scripts/resources.qrc \
+    img/resources.qrc
 
 STATECHARTS +=

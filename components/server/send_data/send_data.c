@@ -39,7 +39,7 @@ int main(int argc, char** argv)
         printf("Cannot open mbox file, exiting.\n");
         return -1;
     }
-    strcpy(buf.string, argv[0]);
+    strcpy(buf.string, argv[1]);
     buf.len = strlen(buf.string)+1;
     ioctl(fd, WRITE_SSTRING, (sstring*) &buf); 
     printf("Successfully sent %s\n.", buf.string);

@@ -136,7 +136,7 @@ void handle_incoming()
             else if(*(buffer+param1_size+3) == '?')
             {
                 int timing;
-                switch(time_res[17] = *(buffer+param1_size+3)) {
+                switch(time_res[17] = *(buffer+param1_size+1)) {
                     case 'A': timing = get_time_A(); break;
                     case 'B': timing = get_time_B(); break;
                     case 'C': timing = get_time_C(); break;
