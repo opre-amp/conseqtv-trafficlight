@@ -9,7 +9,7 @@ LIBRARY_PATH = -L$(COMPONENTS_PATH)/server/mailbox_api/c_lib
 libmailbox_javacompat.so: hu_conseqtv_TrafficLight.o
 	$(PREFIX)gcc -shared -o $@ $^ $(LIBRARY_PATH) -lmailbox
 
-hu_conseqtv_TrafficLight.o: hu_conseqtv_TrafficLight.c
+hu_conseqtv_TrafficLight.o: hu_conseqtv_TrafficLight.c hu_conseqtv_TrafficLight.h
 	$(PREFIX)gcc $(INCLUDE_LIST) -fPIC -c -o $@ $<
 
 hu_conseqtv_TrafficLight.h: $(COMPONENTS_PATH)/server/mailbox_api/java_lib/build/classes/java/main/hu/conseqtv/TrafficLight.class
