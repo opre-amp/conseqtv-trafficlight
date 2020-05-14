@@ -3,7 +3,7 @@ var saved_username;
 var token;
 var role;
 var state = "Off";
-const url_base = 'http://10.0.1.119:8080/'
+const url_base = 'https://10.0.1.119:443/'
 
 var last_reachable = 0;
 var last_heartbeat = 0;
