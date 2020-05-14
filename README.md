@@ -22,9 +22,15 @@ Alap feladatok (maximális kapható pontokkal):
 - [x] 7p: Linux alatt saját, jól átgondolt kommunikációs protokoll implementálása.
 - [x] 15p: Linux alatt eszközvezérlő készítése
 - [ ] 5p: Aszinkron üzenetsorral kommunikáló szerverek (vagyis több backend komponens van).
+<<<<<<< HEAD
 - [x] 5p: Java Persistence API használata, legalább 5 osztállyal.
 - [x] 2p: Spring Data használata
 - [x] 3p: Függőséginjektálás Spring alapokon
+=======
+- [ ] 5p: Java Persistence API használata, legalább 5 osztállyal.
+- [x] 2p: Spring Data használata
+- [ ] 3p: Függőséginjektálás Spring alapokon
+>>>>>>> master
 - [ ] 3p: Az alapértelmezettől eltérő tranzakció kezelés.
 - [x] 5p: Megfelelő biztonsági óvintézkedések (authorizáció, SQL injection kivédése, szerver oldali validáció, biztonságos jelszó tárolás stb.)
 - [ ] 2p: Unit tesztek használata (Jelentős lefedettség esetén további bónusz pontokat ér.)
@@ -33,11 +39,19 @@ Alap feladatok (maximális kapható pontokkal):
 
 Bónusz feladatok, melyek plusz utánajárást is igényelhetnek (maximális kapható pontokkal, csak ha az alap feladatokból időben leadva legalább 30 pont összegyűlt):
 - [x] 5p: Linux alatt telepítő csomag készítése
+<<<<<<< HEAD
 - [ ] 5p: Időzített taskok a backendben.
 - [ ] 5p: Linux alatt megszakítás kezelő készítése
 - [ ] 5p: E-mail küldés a backendben.
 - [ ] 3-10p: Jelentős automatikus teszt lefedettség, lefedettségtől függően pontozva
 - [x] 3p: QRC mechanizmus használata nem QML fájlok tárolására és elérésére.
+=======
+- [x] 5p: Időzített taskok a backendben.
+- [x] 5p: Linux alatt megszakítás kezelő készítése
+- [ ] 5p: E-mail küldés a backendben.
+- [ ] 3-10p: Jelentős automatikus teszt lefedettség, lefedettségtől függően pontozva
+- [ ] 3p: QRC mechanizmus használata nem QML fájlok tárolására és elérésére.
+>>>>>>> master
 - [x] 3p: Saját fejlesztésű dinamikusan linkelt könyvtár használata.
 - [x] 8p: Induláskor lefutó öntesztelő funkció megvalósítása, mely a rendszer minden komponensének elérhetőségét és alapvető funkcióinak működőképességét teszteli (pl. webes felületről egy adat elmentése adatbázisba, majd visszaolvasása, hardver periféria megszólítása, valamint a vastag kliensen a logba írás).
 
