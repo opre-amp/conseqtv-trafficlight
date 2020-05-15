@@ -187,6 +187,7 @@ serverlogic.jar: $(COMPONENTS_PATH)/server/serverlogic/build/libs/serverlogic-1.
 	cp $< $@ 
 
 $(COMPONENTS_PATH)/server/serverlogic/build/libs/serverlogic-1.0-SNAPSHOT.jar: server.jar
+	mkdir -p  $(COMPONENTS_PATH)/server/serverlogic/libs
 	cp $< $(COMPONENTS_PATH)/server/serverlogic/libs/mailbox_api.jar
 	cd $(COMPONENTS_PATH)/server/serverlogic && ./gradlew build
 
