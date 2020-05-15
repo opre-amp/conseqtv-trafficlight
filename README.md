@@ -7,11 +7,9 @@ Csapattagok Neptun kóddal:
 - Bajczi Levente (XAO5ER)
 - Meleg Eszter (FK5E4E)
 
-Bemutató videó URL: 
-(Ugye minden olyan dolog szerepel benne a kiírásnak megfelelően, amire pontot szeretnétek kapni?)
+Bemutató videó URL: https://www.youtube.com/watch?v=TezqP3Mi2GI
 
 **Pontot érő technológiák**
-(Amit elkészítettetek, azt X-eljétek be!)
 
 Alap feladatok (maximális kapható pontokkal):
 - [ ] 7p: Yocto projekt alapokon készített szerver vagy kliens (házi feladatonként egyszer)
