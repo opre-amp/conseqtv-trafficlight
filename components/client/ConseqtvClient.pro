@@ -1,6 +1,6 @@
 QT       += core gui
 QT       += quick
-QT       += widgets scxml
+QT       += widgets
 QT       += qml
 QT       += sql
 
