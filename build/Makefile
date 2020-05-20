@@ -13,7 +13,7 @@ LINUX_REPO :=  https://github.com/raspberrypi/linux.git
 LINUX_BRANCH := rpi-4.19.y-rt
 LINUX_CONFIG :=  bcm2709_defconfig
 
-UBOOT_REPO := git://git.denx.de/u-boot.git
+UBOOT_REPO := git://git.denx.de/u-boot.git -b v2020.04
 UBOOT_CONFIG := rpi_2_defconfig
 
 
@@ -39,8 +39,8 @@ $(DEB_NAME).deb: $(ARTIFACTS)
 	mkdir -p $(DEB_NAME)/usr/lib
 	cp libmailbox.so $(DEB_NAME)/usr/lib/
 	cp libmailbox_javacompat.so $(DEB_NAME)/usr/lib/
-	cp server.jar $(DEB_NAME)/tmp/
-	cp serverlogic.jar $(DEB_NAME)/usr/share/$(DEB_NAME)/
+	cp server.jar $(DEB_NAME)/usr/share/$(DEB_NAME)/
+	cp serverlogic.jar $(DEB_NAME)/tmp
 	mkdir -p $(DEB_NAME)/etc/systemd/system
 	cp conseqtv-server.service $(DEB_NAME)/etc/systemd/system/
 	dpkg-deb --build $(DEB_NAME)
@@ -48,14 +48,14 @@ $(DEB_NAME).deb: $(ARTIFACTS)
 
 
 control:
-	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: armhf\nReplaces: raspberrypi-kernel\nDepends: openjdk-8-jre-headless\nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
+	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: armhf\nReplaces: raspberrypi-kernel\nDepends: openjdk-8-jre-headless mariadb-server\nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
 
 postinst:
-	printf "#!/bin/bash\nsudo keytool -genkey -noprompt -alias conseqtv -storepass 123456 -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore /home/pi/keystore.p12 -validity 3650 -dname 'CN=UNKNOWN, OU=UNKNOWN, O=UNKNOWN, L=UNKNOWN, S=UNKNOWN, C=UNKNOWN'\nsudo cp /tmp/server.jar /home/*/\nsudo cp /tmp/serverlogic.jar /home/*/\nsudo cp -r /tmp/boot/* /boot/\nsudo systemctl enable conseqtv-server\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
+	printf "#!/bin/bash\nsudo keytool -genkey -noprompt -alias conseqtv -storepass 123456 -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore /home/pi/keystore.p12 -validity 3650 -dname 'CN=UNKNOWN, OU=UNKNOWN, O=UNKNOWN, L=UNKNOWN, S=UNKNOWN, C=UNKNOWN'\nsudo cp /tmp/serverlogic.jar /home/*/\nsudo cp -r /tmp/boot/* /boot/\necho 'CREATE DATABASE testdb;' | sudo mysql -u root\nsudo systemctl enable conseqtv-server\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
 	chmod 755 $@
 
 conseqtv-server.service:
-	printf "[Unit]\nDescription=Starts the controller software on boot.\n\n[Service]\nType=simple\nExecStartPre=depmod -a\nExecStartPre=modprobe mailbox\nExecStartPre=loader /usr/share/conseqtv-server/controller.img\nExecStart=java -jar /home/pi/server.jar\n\n[Install]\nWantedBy=multi-user.target" > $@
+	printf "[Unit]\nAfter=network-online.target\nWants=network-online.target\nDescription=Starts the controller software on boot.\n\n[Service]\nType=simple\nExecStartPre=depmod -a\nExecStartPre=modprobe mailbox\nExecStartPre=loader /usr/share/conseqtv-server/controller.img\nExecStart=java -jar /usr/share/$(DEB_NAME)/server.jar\n\n[Install]\nWantedBy=multi-user.target" > $@
 
 
 
