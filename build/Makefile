@@ -48,7 +48,7 @@ $(DEB_NAME).deb: $(ARTIFACTS)
 
 
 control:
-	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: armhf\nReplaces: raspberrypi-kernel\nDepends: openjdk-8-jre-headless mariadb-server\nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
+	printf "Package: $(DEB_NAME)\nVersion: 1.0-1\nSection: base\nPriority: optional\nArchitecture: armhf\nReplaces: raspberrypi-kernel\nDepends: openjdk-8-jre-headless, mariadb-server\nMaintainer: Levente Bajczi <levente.bajczi@edu.bme.hu>\nDescription: Installs the necessary components for the server part of the traffic light project\n" > $@
 
 postinst:
 	printf "#!/bin/bash\nsudo keytool -genkey -noprompt -alias conseqtv -storepass 123456 -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore /home/pi/keystore.p12 -validity 3650 -dname 'CN=UNKNOWN, OU=UNKNOWN, O=UNKNOWN, L=UNKNOWN, S=UNKNOWN, C=UNKNOWN'\nsudo cp /tmp/serverlogic.jar /home/*/\nsudo cp -r /tmp/boot/* /boot/\necho 'CREATE DATABASE testdb;' | sudo mysql -u root\nsudo systemctl enable conseqtv-server\necho 'You will have to restart this machine for the changes to take effect.'\n" > $@
